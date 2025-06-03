@@ -2,6 +2,7 @@ package com.generation.fitness_backend.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -54,6 +55,10 @@ public class Exercicios {
 	@NotNull(message = "A data de criação é obrigatória!")
 	@Column(name = "data_criacao", nullable = false)
 	private LocalDate dataCriacao;
+	
+	@ManyToOne
+    @JsonIgnoreProperties("exercicios")
+	private Categoria categoria;
 	
 	public Exercicios() {
 		this.dataCriacao = LocalDate.now();
@@ -114,4 +119,14 @@ public class Exercicios {
 	public void setDataCriacao(LocalDate dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
+
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
 }
