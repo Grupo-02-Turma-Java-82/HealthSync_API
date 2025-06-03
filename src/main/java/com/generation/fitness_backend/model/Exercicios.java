@@ -35,21 +35,21 @@ public class Exercicios {
 	@NotBlank(message = "O atributo descricao_detalhada é Obrigatório!")
 	@Column(length = 100, nullable = false)
 	@Size(max = 1000, message = "A descrição deve ter no máximo 1000 caracteres.")
-	private String descricao_detalhada;
+	private String descricaoDetalhada;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull(message = "O nível de dificuldade do exercício é obrigatório!")
 	@Column(name = "nivel_dificuldade", nullable = false, length = 50)
-	private DificuldadeExercicio nivel_dificuldade;
+	private DificuldadeExercicio nivelDificuldade;
 
 	@NotBlank(message = "O atributo url_video_demonstrativo é Obrigatório!")
 	@Column(length = 100, nullable = false)
 	@Size(max = 1000, message = "A url do vídeo deve ter no máximo 1000 caracteres.")
-	private String url_video_demonstrativo;
+	private String urlVideoDemonstrativo;
 
 	@Column(length = 100, nullable = true)
 	@Size(max = 1000, message = "O atributo equipamento necessário deve ter no máximo 1000 caracteres.")
-	private String equipamento_necessario;
+	private String equipamentoNecessario;
 
 	@NotNull(message = "A data de criação é obrigatória!")
 	@Column(name = "data_criacao", nullable = false)
@@ -76,35 +76,35 @@ public class Exercicios {
 	}
 
 	public String getDescricao_detalhada() {
-		return descricao_detalhada;
+		return descricaoDetalhada;
 	}
 
-	public void setDescricao_detalhada(String descricao_detalhada) {
-		this.descricao_detalhada = descricao_detalhada;
+	public void setDescricao_detalhada(String descricaoDetalhada) {
+		this.descricaoDetalhada = descricaoDetalhada;
 	}
 
 	public DificuldadeExercicio getNivel_dificuldade() {
-		return nivel_dificuldade;
+		return nivelDificuldade;
 	}
 
-	public void setNivel_dificuldade(DificuldadeExercicio nivel_dificuldade) {
-		this.nivel_dificuldade = nivel_dificuldade;
+	public void setNivel_dificuldade(DificuldadeExercicio nivelDificuldade) {
+		this.nivelDificuldade = nivelDificuldade;
 	}
 
 	public String getUrl_video_demonstrativo() {
-		return url_video_demonstrativo;
+		return urlVideoDemonstrativo;
 	}
 
-	public void setUrl_video_demonstrativo(String url_video_demonstrativo) {
-		this.url_video_demonstrativo = url_video_demonstrativo;
+	public void setUrl_video_demonstrativo(String urlVideoDemonstrativo) {
+		this.urlVideoDemonstrativo = urlVideoDemonstrativo;
 	}
 
 	public String getEquipamento_necessario() {
-		return equipamento_necessario;
+		return equipamentoNecessario;
 	}
 
-	public void setEquipamento_necessario(String equipamento_necessario) {
-		this.equipamento_necessario = equipamento_necessario;
+	public void setEquipamento_necessario(String equipamentoNecessario) {
+		this.equipamentoNecessario = equipamentoNecessario;
 	}
 
 	public LocalDate getDataCriacao() {
