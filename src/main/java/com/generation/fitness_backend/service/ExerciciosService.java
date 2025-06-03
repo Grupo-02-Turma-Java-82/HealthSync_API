@@ -27,20 +27,20 @@ public class ExerciciosService {
 
 	public List<Exercicios> findByNome(String nome) {
 		return exerciciosRepository.findAllByNomeContainingIgnoreCase(nome);
-	
-		
+
 	}
 
 	public Exercicios criar(Exercicios exercicio) {
-        return exerciciosRepository.save(exercicio);
-    }
+		return exerciciosRepository.save(exercicio);
+	}
 
-    public Optional<Exercicios> atualizar(Exercicios exercicio) {
-        if (exercicio.getId() == null || !exerciciosRepository.existsById(exercicio.getId())) {
-            return Optional.empty();
-        }
-        return Optional.of(exerciciosRepository.save(exercicio));
-    }
+	public Optional<Exercicios> atualizar(Exercicios exercicio) {
+		if (exercicio.getId() == null || !exerciciosRepository.existsById(exercicio.getId())) {
+			return Optional.empty();
+		}
+		return Optional.of(exerciciosRepository.save(exercicio));
+	}
+
 	public void deleteById(Long id) {
 		Optional<Exercicios> exercicio = exerciciosRepository.findById(id);
 
@@ -48,6 +48,6 @@ public class ExerciciosService {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado!");
 		}
 
-			exerciciosRepository.deleteById(id);
+		exerciciosRepository.deleteById(id);
 	}
 }

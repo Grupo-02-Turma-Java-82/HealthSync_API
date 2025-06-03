@@ -37,11 +37,9 @@ public class ExerciciosController {
 
 	@Autowired
 	private ExerciciosService exerciciosService;
-	
 
 	@Autowired
 	private ExerciciosRepository exerciciosRepository;
-
 
 	@GetMapping
 	@Operation(summary = "Lista todos os exercícios", description = "Retorna uma lista completa de todos os exercícios cadastrados.")

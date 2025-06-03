@@ -1,10 +1,6 @@
 package com.generation.fitness_backend.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
