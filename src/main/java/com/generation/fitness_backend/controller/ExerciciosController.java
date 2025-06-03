@@ -1,7 +1,6 @@
 package com.generation.fitness_backend.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.fitness_backend.model.Exercicios;
 import com.generation.fitness_backend.repository.ExerciciosRepository;
+import com.generation.fitness_backend.service.ExerciciosService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,13 +36,18 @@ import jakarta.validation.Valid;
 public class ExerciciosController {
 
 	@Autowired
-	private ExerciciosRepository exercicosRepository;
+	private ExerciciosService exerciciosService;
+	
+
+	@Autowired
+	private ExerciciosRepository exerciciosRepository;
+
 
 	@GetMapping
 	@Operation(summary = "Lista todos os exercícios", description = "Retorna uma lista completa de todos os exercícios cadastrados.")
 	@ApiResponse(responseCode = "200", description = "Lista de exercícios obtida com sucesso.")
 	public ResponseEntity<List<Exercicios>> getAll() {
-		return ResponseEntity.ok(exercicosRepository.findAll());
+		return ResponseEntity.ok(exerciciosService.findAll());
 	}
 
 	@GetMapping("/{id}")
@@ -52,8 +57,8 @@ public class ExerciciosController {
 			@ApiResponse(responseCode = "404", description = "Exercício não encontrado.")
 	})
 	public ResponseEntity<Exercicios> getById(@PathVariable Long id) {
-		return exercicosRepository.findById(id)
-				.map(resposta -> ResponseEntity.ok(resposta))
+
+		return exerciciosService.findById(id).map(resposta -> ResponseEntity.ok(resposta))
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 
@@ -64,7 +69,7 @@ public class ExerciciosController {
 			@ApiResponse(responseCode = "400", description = "Dados do exercício inválidos.")
 	})
 	public ResponseEntity<Exercicios> post(@Valid @RequestBody Exercicios exercicio) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(exercicosRepository.save(exercicio));
+		return ResponseEntity.status(HttpStatus.CREATED).body(exerciciosService.criar(exercicio));
 	}
 
 	@PutMapping
@@ -81,11 +86,11 @@ public class ExerciciosController {
 		}
 
 		// Melhoria: Retornar 404 se o exercício não existir
-		if (!exercicosRepository.existsById(exercicio.getId())) {
+		if (!exerciciosRepository.existsById(exercicio.getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado para atualização!");
 		}
 
-		return ResponseEntity.status(HttpStatus.OK).body(exercicosRepository.save(exercicio));
+		return ResponseEntity.status(HttpStatus.OK).body(exerciciosService.criar(exercicio));
 	}
 
 	@DeleteMapping("/{id}")
@@ -96,12 +101,7 @@ public class ExerciciosController {
 			@ApiResponse(responseCode = "404", description = "Exercício não encontrado para exclusão.")
 	})
 	public void delete(@PathVariable Long id) {
-		Optional<Exercicios> exercicio = exercicosRepository.findById(id);
 
-		if (exercicio.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado!");
-		}
-
-		exercicosRepository.deleteById(id);
+		exerciciosService.deleteById(id);
 	}
 }

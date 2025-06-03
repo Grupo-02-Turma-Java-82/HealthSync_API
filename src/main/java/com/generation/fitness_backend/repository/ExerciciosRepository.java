@@ -7,7 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.generation.fitness_backend.model.Exercicios;
 
 public interface ExerciciosRepository extends JpaRepository<Exercicios, Long> {
-
-	/* SELECT * FROM tb_pontagens WHERE titulo LIKE "%?%"; */
-	List<Exercicios> findAllByNomeContainingIgnoreCase(String nome);
+    List<Exercicios> findAllByNomeContainingIgnoreCase(String nome);
 }
