@@ -21,53 +21,84 @@ import org.springframework.web.server.ResponseStatusException;
 import com.generation.fitness_backend.model.Exercicios;
 import com.generation.fitness_backend.repository.ExerciciosRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/exercicios")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@Tag(name = "Exercícios", description = "Gerencia os exercícios cadastrados na plataforma de fitness")
 public class ExerciciosController {
 
 	@Autowired
 	private ExerciciosRepository exercicosRepository;
 
 	@GetMapping
+	@Operation(summary = "Lista todos os exercícios", description = "Retorna uma lista completa de todos os exercícios cadastrados.")
+	@ApiResponse(responseCode = "200", description = "Lista de exercícios obtida com sucesso.")
 	public ResponseEntity<List<Exercicios>> getAll() {
 		return ResponseEntity.ok(exercicosRepository.findAll());
 	}
 
 	@GetMapping("/{id}")
+	@Operation(summary = "Busca exercício por ID", description = "Retorna um exercício específico com base no ID fornecido.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Exercício encontrado.", content = @Content(schema = @Schema(implementation = Exercicios.class))),
+			@ApiResponse(responseCode = "404", description = "Exercício não encontrado.")
+	})
 	public ResponseEntity<Exercicios> getById(@PathVariable Long id) {
 		return exercicosRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta))
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 
 	@PostMapping
+	@Operation(summary = "Cadastra um novo exercício", description = "Cria um novo exercício no sistema.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "Exercício cadastrado com sucesso.", content = @Content(schema = @Schema(implementation = Exercicios.class))),
+			@ApiResponse(responseCode = "400", description = "Dados do exercício inválidos.")
+	})
 	public ResponseEntity<Exercicios> post(@Valid @RequestBody Exercicios exercicio) {
-		// validaçao na camada de servico!!
 		return ResponseEntity.status(HttpStatus.CREATED).body(exercicosRepository.save(exercicio));
 	}
 
 	@PutMapping
+	@Operation(summary = "Atualiza um exercício existente", description = "Modifica os dados de um exercício já cadastrado. O ID do exercício é obrigatório no corpo da requisição.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Exercício atualizado com sucesso.", content = @Content(schema = @Schema(implementation = Exercicios.class))),
+			@ApiResponse(responseCode = "400", description = "ID do exercício não fornecido ou inválido."),
+			@ApiResponse(responseCode = "404", description = "Exercício não encontrado para atualização.") // Adicionado para o caso de o ID não existir
+	})
 	public ResponseEntity<Exercicios> put(@Valid @RequestBody Exercicios exercicio) {
 
 		if (exercicio.getId() == null) {
 			return ResponseEntity.badRequest().build(); // ID é obrigatório para PUT
 		}
 
-		if (exercicosRepository.existsById(exercicio.getId())) {
-			return ResponseEntity.status(HttpStatus.OK).body(exercicosRepository.save(exercicio));
+		// Melhoria: Retornar 404 se o exercício não existir
+		if (!exercicosRepository.existsById(exercicio.getId())) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado para atualização!");
 		}
 
 		return ResponseEntity.status(HttpStatus.OK).body(exercicosRepository.save(exercicio));
 	}
 
 	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT) // Para indicar que a operação foi bem-sucedida sem conteúdo de retorno
+	@Operation(summary = "Deleta um exercício por ID", description = "Remove um exercício do sistema com base no ID fornecido.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "204", description = "Exercício deletado com sucesso."),
+			@ApiResponse(responseCode = "404", description = "Exercício não encontrado para exclusão.")
+	})
 	public void delete(@PathVariable Long id) {
 		Optional<Exercicios> exercicio = exercicosRepository.findById(id);
 
 		if(exercicio.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Oportunidade não encontrada!");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado!");
 		}
 
 		exercicosRepository.deleteById(id);
