@@ -1,6 +1,10 @@
 package com.generation.fitness_backend.model;
 
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,7 +12,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "tb_categorias")
 public class Categoria {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_categoria")
@@ -21,10 +25,14 @@ public class Categoria {
     @Size(max = 500)
     private String descricao;
     
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria", cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties("categoria")
+    private List<Exercicios> exercicios;
+    
     // Getters e Setters
 
 	public Long getId() {
-		return id;
+	return id;
 	}
 
 	public void setId(Long id) {
@@ -45,6 +53,14 @@ public class Categoria {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+	
+	public List<Exercicios> getExercicios() {
+		return exercicios;
+	}
+
+	public void setExercicios(List<Exercicios> exercicios) {
+		this.exercicios = exercicios;
 	}
 	
 }
