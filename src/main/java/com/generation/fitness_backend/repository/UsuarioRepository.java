@@ -8,6 +8,6 @@ import com.generation.fitness_backend.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 	
-	 Optional<Usuario> findByEmail(String email); // procurar usuario por email
+	 Optional<Usuario> findByEmailIgnoreCase(String email); // procurar usuario por email
 	
 }

@@ -38,7 +38,8 @@ public class ExerciciosController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Exercicios> getById(@PathVariable Long id) {
-		return exercicosRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta))
+		return exercicosRepository.findById(id)
+				.map(resposta -> ResponseEntity.ok(resposta))
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 

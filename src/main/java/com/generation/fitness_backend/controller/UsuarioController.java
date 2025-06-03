@@ -1,7 +1,6 @@
 package com.generation.fitness_backend.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.fitness_backend.model.Usuario;
-import com.generation.fitness_backend.repository.UsuarioRepository;
+import com.generation.fitness_backend.service.UsuarioService;
 
 import jakarta.validation.Valid;
 
@@ -29,67 +27,41 @@ import jakarta.validation.Valid;
 public class UsuarioController {
 
 	@Autowired
-	private UsuarioRepository usuarioRepository;
+	private UsuarioService usuarioService;
 
 	@GetMapping
 	public ResponseEntity<List<Usuario>> getAll() {
-		
-		return ResponseEntity.ok(usuarioRepository.findAll()); // retorna todos os usuários com status 200 OK
+
+		return ResponseEntity.ok(usuarioService.findAll()); // retorna todos os usuários com status 200 OK
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Usuario> getById(@PathVariable Integer id) {
-		
 		// usa findById do rep, que retorna um Optional
-		return usuarioRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta)) // encontrou, retorna 200
-				.orElse(ResponseEntity.notFound().build()); // nao encontrou, retorna 404
+		return usuarioService.findById(id)
+				.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+	}
+
+	// getmapping para buscar por email
+	@GetMapping("/email/{email}")
+	public ResponseEntity<Usuario> getByEmail(@PathVariable String email) {
+		return usuarioService.findByEmail(email)
+				.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
 	}
 
 	@PostMapping("/cadastrar")
 	public ResponseEntity<Usuario> post(@Valid @RequestBody Usuario usuario) {
-
-		try {
-			Usuario novoUsuario = usuarioRepository.save(usuario);
-			return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
-		} catch (Exception e) {
-
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já cadastrado ou dados inválidos!");
-		}
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario));
 	}
 
 	@PutMapping("/atualizar")
 	public ResponseEntity<Usuario> put(@Valid @RequestBody Usuario usuario) {
-
-		if (usuario.getIdUsuario() == null) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID do usuário é obrigatório para atualização!");
-		}
-
-		return usuarioRepository.findById(usuario.getIdUsuario()).map(resposta -> {
-
-			resposta.setNomeCompleto(usuario.getNomeCompleto());
-			resposta.setEmail(usuario.getEmail());
-			resposta.setSenha(usuario.getSenha());
-			resposta.setDataNascimento(usuario.getDataNascimento());
-			resposta.setGenero(usuario.getGenero());
-			resposta.setAlturaCm(usuario.getAlturaCm());
-			resposta.setPesoKg(usuario.getPesoKg());
-			resposta.setObjetivoPrincipal(usuario.getObjetivoPrincipal());
-
-			Usuario usuarioAtualizado = usuarioRepository.save(resposta);
-			return ResponseEntity.ok(usuarioAtualizado);
-		}).orElse(ResponseEntity.notFound().build()); // se o usuário n existir, retorna 404
+		return ResponseEntity.ok(usuarioService.update(usuario));
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Integer id) {
-		
-		Optional<Usuario> usuario = usuarioRepository.findById(id);
-
-		if (usuario.isEmpty())
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado!");
-
-		usuarioRepository.deleteById(id);
-
+		usuarioService.deleteById(id);
 	}
 }

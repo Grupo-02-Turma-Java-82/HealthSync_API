@@ -23,7 +23,7 @@ public class Usuario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer idUsuario;
+	private Integer id;
 
 	@NotBlank(message = "O atributo Nome Completo é obrigatório!")
 	@Column(nullable = false, length = 255)
@@ -62,11 +62,11 @@ public class Usuario {
 	private LocalDateTime dataCadastro;
 
 	public Integer getIdUsuario() {
-		return idUsuario;
+		return id;
 	}
 
 	public void setIdUsuario(Integer idUsuario) {
-		this.idUsuario = idUsuario;
+		this.id = idUsuario;
 	}
 
 	public String getNomeCompleto() {
