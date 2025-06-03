@@ -25,11 +25,11 @@ import jakarta.validation.constraints.Size;
 @Table(name = "tb_exercicios")
 public class Exercicios {
 
-    @Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank(message = "O atributo nome é Obrigatório!") 
+	@NotBlank(message = "O atributo nome é Obrigatório!")
 	@Size(min = 5, max = 100, message = "O atributo nome deve conter no mínimo 05 e no máximo 100 caracteres")
 	private String nome;
 
@@ -55,15 +55,15 @@ public class Exercicios {
 	@NotNull(message = "A data de criação é obrigatória!")
 	@Column(name = "data_criacao", nullable = false)
 	private LocalDate dataCriacao;
-	
+
 	@ManyToOne
-    @JsonIgnoreProperties("exercicios")
+	@JsonIgnoreProperties("exercicios")
 	private Categoria categoria;
-	
+
 	public Exercicios() {
 		this.dataCriacao = LocalDate.now();
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -119,7 +119,6 @@ public class Exercicios {
 	public void setDataCriacao(LocalDate dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
-
 
 	public Categoria getCategoria() {
 		return categoria;

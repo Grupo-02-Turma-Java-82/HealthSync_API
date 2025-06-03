@@ -72,7 +72,7 @@ public class ExerciciosController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Exercício atualizado com sucesso.", content = @Content(schema = @Schema(implementation = Exercicios.class))),
 			@ApiResponse(responseCode = "400", description = "ID do exercício não fornecido ou inválido."),
-			@ApiResponse(responseCode = "404", description = "Exercício não encontrado para atualização.") // Adicionado para o caso de o ID não existir
+			@ApiResponse(responseCode = "404", description = "Exercício não encontrado para atualização.")
 	})
 	public ResponseEntity<Exercicios> put(@Valid @RequestBody Exercicios exercicio) {
 
@@ -98,7 +98,7 @@ public class ExerciciosController {
 	public void delete(@PathVariable Long id) {
 		Optional<Exercicios> exercicio = exercicosRepository.findById(id);
 
-		if(exercicio.isEmpty()) {
+		if (exercicio.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado!");
 		}
 

@@ -32,7 +32,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/categorias")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@Tag(name = "Categorias", description = "Gerencia as categorias de produtos ou serviços na plataforma de fitness") // Anotação a nível de classe
+@Tag(name = "Categorias", description = "Gerencia as categorias de produtos ou serviços na plataforma de fitness")
 public class CategoriaController {
 
 	@Autowired
@@ -61,7 +61,7 @@ public class CategoriaController {
 	@Operation(summary = "Busca categorias por nome", description = "Retorna uma lista de categorias cujo nome contém o texto fornecido (case-insensitive).")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Lista de categorias por nome obtida com sucesso."),
-			@ApiResponse(responseCode = "204", description = "Nenhuma categoria encontrada com o nome especificado.") // Adicionado para indicar No Content
+			@ApiResponse(responseCode = "204", description = "Nenhuma categoria encontrada com o nome especificado.")
 	})
 	public ResponseEntity<List<Categoria>> getByNome(@PathVariable String nome) {
 		// Melhoria: Retornar NO_CONTENT se a lista estiver vazia para ser mais RESTful

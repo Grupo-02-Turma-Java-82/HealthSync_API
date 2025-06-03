@@ -17,16 +17,21 @@ public class SwaggerConfig {
 
   @Bean
   public OpenAPI fitnessBackendOpenAPI() {
-	  String descricao = "A **API HealthSync** é uma solução backend robusta, desenvolvida em Java com Spring Boot, " +
-		        "projetada para otimizar e gerenciar o **cadastro de exercícios e a criação de treinos personalizados**.\n\n" +
-		        "Esta API RESTful oferece um conjunto de endpoints para facilitar a integração com sistemas frontend " +
-		        "e outras aplicações, **centralizando as informações e processos de planejamento e execução de atividades físicas**.\n\n" +
-		        "**Principais Funcionalidades da API:**\n" +
-		        "* **Gerenciamento de Exercícios (CRUD):** Cadastro, consulta, atualização, exclusão e busca de exercícios, com detalhes como nome, descrição, tipo e equipamentos necessários.\n" +
-		        "* **Gestão de Treinos (CRUD):** Criação, acompanhamento, atualização de status (Concluído, Em Andamento, Pendente) e exclusão de treinos personalizados para usuários.\n" +
-		        "* **Organização por Categorias de Exercícios:** Associação de exercícios a diferentes categorias (e.g., força, cardio, flexibilidade) para facilitar a busca e a organização.\n" +
-		        "* **Gerenciamento de Usuários do Sistema:** Cadastro, consulta e atualização de usuários, incluindo suas informações pessoais, objetivos e histórico de treinos.\n" +
-		        "* **Rastreamento de Progresso:** Funcionalidades para acompanhar o progresso dos usuários ao longo do tempo (implícito via treinos e exercícios).\n";
+    String descricao = "A **API HealthSync** é uma solução backend robusta, desenvolvida em Java com Spring Boot, " +
+        "projetada para otimizar e gerenciar o **cadastro de exercícios e a criação de treinos personalizados**.\n\n" +
+        "Esta API RESTful oferece um conjunto de endpoints para facilitar a integração com sistemas frontend " +
+        "e outras aplicações, **centralizando as informações e processos de planejamento e execução de atividades físicas**.\n\n"
+        +
+        "**Principais Funcionalidades da API:**\n" +
+        "* **Gerenciamento de Exercícios (CRUD):** Cadastro, consulta, atualização, exclusão e busca de exercícios, com detalhes como nome, descrição, tipo e equipamentos necessários.\n"
+        +
+        "* **Gestão de Treinos (CRUD):** Criação, acompanhamento, atualização de status (Concluído, Em Andamento, Pendente) e exclusão de treinos personalizados para usuários.\n"
+        +
+        "* **Organização por Categorias de Exercícios:** Associação de exercícios a diferentes categorias (e.g., força, cardio, flexibilidade) para facilitar a busca e a organização.\n"
+        +
+        "* **Gerenciamento de Usuários do Sistema:** Cadastro, consulta e atualização de usuários, incluindo suas informações pessoais, objetivos e histórico de treinos.\n"
+        +
+        "* **Rastreamento de Progresso:** Funcionalidades para acompanhar o progresso dos usuários ao longo do tempo (implícito via treinos e exercícios).\n";
 
     return new OpenAPI()
         .info(new Info()
@@ -52,7 +57,8 @@ public class SwaggerConfig {
         ApiResponses apiResponses = operation.getResponses();
         apiResponses.addApiResponse("200", createApiResponse("Sucesso!"));
         apiResponses.addApiResponse("201", createApiResponse("Objeto Criado/Persistido!"));
-        apiResponses.addApiResponse("204", createApiResponse("Operação bem-sucedida, sem conteúdo de retorno (Ex: Objeto Excluído)."));
+        apiResponses.addApiResponse("204",
+            createApiResponse("Operação bem-sucedida, sem conteúdo de retorno (Ex: Objeto Excluído)."));
         apiResponses.addApiResponse("400", createApiResponse("Erro na Requisição (Ex: Dados inválidos)."));
         apiResponses.addApiResponse("401", createApiResponse("Acesso Não Autorizado (Requer autenticação)."));
         apiResponses.addApiResponse("403", createApiResponse("Acesso Proibido (Autenticado, mas sem permissão)."));

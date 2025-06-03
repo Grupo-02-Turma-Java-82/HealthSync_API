@@ -12,27 +12,27 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "tb_categorias")
 public class Categoria {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_categoria")
 	private Long id;
 
-    @NotBlank(message = "O nome é obrigatório!")
-    @Size(min = 3, max = 100, message = "O atributo nome dever ter no minimo 3 e no maximo 100 caracteres.")
-    private String nome;
-    
-    @Size(max = 500)
-    private String descricao;
-    
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria", cascade = CascadeType.REMOVE)
-    @JsonIgnoreProperties("categoria")
-    private List<Exercicios> exercicios;
-    
-    // Getters e Setters
+	@NotBlank(message = "O nome é obrigatório!")
+	@Size(min = 3, max = 100, message = "O atributo nome dever ter no minimo 3 e no maximo 100 caracteres.")
+	private String nome;
+
+	@Size(max = 500)
+	private String descricao;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria", cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties("categoria")
+	private List<Exercicios> exercicios;
+
+	// Getters e Setters
 
 	public Long getId() {
-	return id;
+		return id;
 	}
 
 	public void setId(Long id) {
@@ -54,7 +54,7 @@ public class Categoria {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	
+
 	public List<Exercicios> getExercicios() {
 		return exercicios;
 	}
@@ -62,5 +62,5 @@ public class Categoria {
 	public void setExercicios(List<Exercicios> exercicios) {
 		this.exercicios = exercicios;
 	}
-	
+
 }
