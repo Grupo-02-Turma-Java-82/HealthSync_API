@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -53,6 +54,9 @@ public class Usuario {
 	@NotNull(message = "O peso é obrigatório")
 	@Column(length = 100, nullable = false)
 	private BigDecimal pesoKg;
+	
+    @Transient // Indica que este campo não será persistido no banco de dados
+    private Double imc;
 
 	@Column(length = 255, nullable = false)
 	private String objetivoPrincipal;
@@ -124,6 +128,23 @@ public class Usuario {
 	public void setPesoKg(BigDecimal pesoKg) {
 		this.pesoKg = pesoKg;
 	}
+	
+    // Getter para o IMC (calculado dinamicamente)
+    public Double getImc() {
+        if (this.pesoKg != null && this.alturaCm != null && this.alturaCm > 0) {
+        	
+        	Double alturaCalc = (double) (this.alturaCm * this.alturaCm);
+            return (this.pesoKg.doubleValue() / (alturaCalc)) * 10000;
+        }
+
+        return null;
+    }
+
+    // O setter para o IMC não é necessário, pois ele é calculado
+    // Mas se você quiser ter um (por exemplo, para DTOs que o aceitem), pode adicionar
+    public void setImc(Double imc) {
+        this.imc = imc;
+    }
 
 	public String getObjetivoPrincipal() {
 		return objetivoPrincipal;
