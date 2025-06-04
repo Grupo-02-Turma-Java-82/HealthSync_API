@@ -11,6 +11,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class SwaggerConfig {
@@ -47,7 +48,8 @@ public class SwaggerConfig {
                 .email("grupo02turmajava82@hotmail.com")))
         .externalDocs(new ExternalDocumentation()
             .description("Repositório do Projeto no Github")
-            .url("https://github.com/Grupo-02-Turma-Java-82/HealthSync"));
+            .url("https://github.com/Grupo-02-Turma-Java-82/HealthSync"))
+        .schemaRequirement("jwt_auth", cSecurityScheme());
   }
 
   @Bean
@@ -70,6 +72,10 @@ public class SwaggerConfig {
 
   private ApiResponse createApiResponse(String message) {
     return new ApiResponse().description(message);
+  }
+
+  private SecurityScheme cSecurityScheme() {
+    return new SecurityScheme().name("jwt_auth").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT");
   }
 
 }

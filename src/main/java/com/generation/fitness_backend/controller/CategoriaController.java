@@ -5,6 +5,7 @@ import java.util.List;
 import com.generation.fitness_backend.model.Categoria;
 import com.generation.fitness_backend.service.CategoriaService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -33,11 +34,13 @@ public class CategoriaController {
 	private CategoriaService categoriaService;
 
 	@GetMapping
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<List<Categoria>> getAll() {
 		return ResponseEntity.ok(categoriaService.listarTodas());
 	}
 
 	@GetMapping("/{id}")
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<Categoria> getById(@PathVariable Long id) {
 		return categoriaService.buscarPorId(id)
 				.map(ResponseEntity::ok)
@@ -45,16 +48,19 @@ public class CategoriaController {
 	}
 
 	@GetMapping("/nome/{nome}")
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<List<Categoria>> getByNome(@PathVariable String nome) {
 		return ResponseEntity.ok(categoriaService.buscarPorNome(nome));
 	}
 
 	@PostMapping
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<Categoria> post(@Valid @RequestBody Categoria categoria) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.criarCategoria(categoria));
 	}
 
 	@PutMapping
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<Categoria> put(@Valid @RequestBody Categoria categoria) {
 		return categoriaService.atualizarCategoria(categoria)
 				.map(ResponseEntity::ok)
@@ -62,6 +68,7 @@ public class CategoriaController {
 	}
 
 	@DeleteMapping("/{id}")
+	@SecurityRequirement(name = "jwt_auth")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
 		boolean apagado = categoriaService.deletarCategoria(id);

@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -44,6 +45,7 @@ public class ExerciciosController {
 	@GetMapping
 	@Operation(summary = "Lista todos os exercícios", description = "Retorna uma lista completa de todos os exercícios cadastrados.")
 	@ApiResponse(responseCode = "200", description = "Lista de exercícios obtida com sucesso.")
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<List<Exercicios>> getAll() {
 		return ResponseEntity.ok(exerciciosService.findAll());
 	}
@@ -54,6 +56,7 @@ public class ExerciciosController {
 			@ApiResponse(responseCode = "200", description = "Exercício encontrado.", content = @Content(schema = @Schema(implementation = Exercicios.class))),
 			@ApiResponse(responseCode = "404", description = "Exercício não encontrado.")
 	})
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<Exercicios> getById(@PathVariable Long id) {
 
 		return exerciciosService.findById(id).map(resposta -> ResponseEntity.ok(resposta))
@@ -66,6 +69,7 @@ public class ExerciciosController {
 			@ApiResponse(responseCode = "201", description = "Exercício cadastrado com sucesso.", content = @Content(schema = @Schema(implementation = Exercicios.class))),
 			@ApiResponse(responseCode = "400", description = "Dados do exercício inválidos.")
 	})
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<Exercicios> post(@Valid @RequestBody Exercicios exercicio) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(exerciciosService.criar(exercicio));
 	}
@@ -77,6 +81,7 @@ public class ExerciciosController {
 			@ApiResponse(responseCode = "400", description = "ID do exercício não fornecido ou inválido."),
 			@ApiResponse(responseCode = "404", description = "Exercício não encontrado para atualização.")
 	})
+	@SecurityRequirement(name = "jwt_auth")
 	public ResponseEntity<Exercicios> put(@Valid @RequestBody Exercicios exercicio) {
 
 		if (exercicio.getId() == null) {
@@ -98,6 +103,7 @@ public class ExerciciosController {
 			@ApiResponse(responseCode = "204", description = "Exercício deletado com sucesso."),
 			@ApiResponse(responseCode = "404", description = "Exercício não encontrado para exclusão.")
 	})
+	@SecurityRequirement(name = "jwt_auth")
 	public void delete(@PathVariable Long id) {
 
 		exerciciosService.deleteById(id);
