@@ -22,8 +22,8 @@ import jakarta.validation.constraints.Size;
 public class Usuario {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
+	private Long id;
 
 	@NotBlank(message = "O atributo Nome Completo é obrigatório!")
 	@Column(nullable = false, length = 255)
@@ -61,12 +61,12 @@ public class Usuario {
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime dataCadastro;
 
-	public Integer getIdUsuario() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setIdUsuario(Integer idUsuario) {
-		this.id = idUsuario;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNomeCompleto() {
