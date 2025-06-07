@@ -2,7 +2,7 @@
 # 💪 HealthSync - Sistema Fitness Personalizado
 
 <div align="center">
-    <img src="https://ik.imagekit.io/tyji9rshh/Sem%20t%C3%ADtulo.jpg?updatedAt=1748973920122" title="HealthSync Logo" width="200" />
+    <img src="https://ik.imagekit.io/brunogodoy/HealthSync.png?updatedAt=1749254734107" title="HealthSync Logo" width="350" />
 </div>
 
 <br />
