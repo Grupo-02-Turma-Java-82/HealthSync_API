@@ -8,6 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -60,10 +62,19 @@ public class Usuario {
 
 	@Column(length = 255, nullable = false)
 	private String objetivoPrincipal;
+	
+	@Enumerated(EnumType.STRING)
+	@NotNull(message = "O tipo do usuario é obrigatorio")
+	@Column(name = "tipo", nullable = false, length = 50)
+	private TipoUsuario tipoUsuario;
 
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime dataCadastro;
+	
+	@CreationTimestamp
+	@Column(nullable = true, updatable = false)
+	private LocalDateTime dataRemocao;
 
 	public Long getId() {
 		return id;
@@ -153,6 +164,14 @@ public class Usuario {
 	public void setObjetivoPrincipal(String objetivoPrincipal) {
 		this.objetivoPrincipal = objetivoPrincipal;
 	}
+	
+	public TipoUsuario getTipoUsuario() {
+		return tipoUsuario;
+	}
+
+	public void setTipoUsuario(TipoUsuario tipoUsuario) {
+		this.tipoUsuario = tipoUsuario;
+	}
 
 	public LocalDateTime getDataCadastro() {
 		return dataCadastro;
@@ -162,4 +181,11 @@ public class Usuario {
 		this.dataCadastro = dataCadastro;
 	}
 
+	public LocalDateTime getDataRemocao() {
+		return dataRemocao;
+	}
+
+	public void setDataRemocao(LocalDateTime dataRemocao) {
+		this.dataRemocao = dataRemocao;
+	}
 }
