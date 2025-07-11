@@ -102,20 +102,19 @@ public class UsuarioService { //logica de autent. e criptografia de senha
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!", e);
 		}
 
-		if (authentication.isAuthenticated()) {
-
-			Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioLogin.get().getEmail());
-
-			if (usuario.isPresent()) {
-
-				usuarioLogin.get().setId(usuario.get().getId());
-				usuarioLogin.get().setNomeCompleto(usuario.get().getNomeCompleto());
-				usuarioLogin.get().setEmail(usuario.get().getEmail());
-				usuarioLogin.get().setSenha("");
-				usuarioLogin.get().setToken(gerarToken(usuarioLogin.get().getEmail()));
-
-				return usuarioLogin;
-			}
+		if (usuario.isPresent()) {
+	
+			    usuarioLogin.get().setId(usuario.get().getId());
+			    usuarioLogin.get().setNomeCompleto(usuario.get().getNomeCompleto());
+			    usuarioLogin.get().setEmail(usuario.get().getEmail());
+			
+			    // ADICIONE ESTA LINHA:
+			    usuarioLogin.get().setTipoUsuario(usuario.get().getTipoUsuario());
+			
+			    usuarioLogin.get().setSenha(""); // Limpa a senha
+			    usuarioLogin.get().setToken(gerarToken(usuarioLogin.get().getEmail()));
+			
+			    return usuarioLogin;
 		}
 
 		return Optional.empty();
