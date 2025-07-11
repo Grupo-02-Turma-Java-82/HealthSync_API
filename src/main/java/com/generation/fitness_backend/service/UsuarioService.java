@@ -52,7 +52,8 @@ public class UsuarioService { //logica de autent. e criptografia de senha
 		return Optional.of(usuarioRepository.save(usuario));
 	}
 
-	public Optional<Usuario> atualizarUsuario(Usuario usuario) { //atualizar
+	// MÉTODO CORRIGIDO
+	public Optional<Usuario> atualizarUsuario(Usuario usuario) {
 
 		if (usuario.getId() == null || usuarioRepository.findById(usuario.getId()).isEmpty()) {
 			return Optional.empty();
@@ -60,19 +61,18 @@ public class UsuarioService { //logica de autent. e criptografia de senha
 
 		Optional<Usuario> buscaUsuarioPorEmail = usuarioRepository.findByEmail(usuario.getEmail());
 		if (buscaUsuarioPorEmail.isPresent() && !buscaUsuarioPorEmail.get().getId().equals(usuario.getId())) {
-
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já cadastrado por outro usuário!");
 		}
 
+		// CORREÇÃO: Busca o usuário do banco para atualizá-lo
 		Usuario usuarioExistente = usuarioRepository.findById(usuario.getId()).get();
 
+		// CORREÇÃO: Atualiza a senha apenas se uma nova for fornecida
 		if (usuario.getSenha() != null && !usuario.getSenha().isBlank()) {
 			usuarioExistente.setSenha(criptografarSenha(usuario.getSenha()));
-		} else {
-
-			usuario.setSenha(usuarioExistente.getSenha());
 		}
 
+		// CORREÇÃO: Copia todos os dados do objeto recebido para o objeto do banco
 		usuarioExistente.setNomeCompleto(usuario.getNomeCompleto());
 		usuarioExistente.setEmail(usuario.getEmail());
 		usuarioExistente.setDataNascimento(usuario.getDataNascimento());
@@ -80,11 +80,14 @@ public class UsuarioService { //logica de autent. e criptografia de senha
 		usuarioExistente.setAlturaCm(usuario.getAlturaCm());
 		usuarioExistente.setPesoKg(usuario.getPesoKg());
 		usuarioExistente.setObjetivoPrincipal(usuario.getObjetivoPrincipal());
+        // Se houver mais campos para atualizar, adicione-os aqui
 
+		// CORREÇÃO: Salva o objeto que foi de fato atualizado
 		return Optional.of(usuarioRepository.save(usuarioExistente));
 	}
 
-	public Optional<UsuarioLogin> autenticarUsuario(Optional<UsuarioLogin> usuarioLogin) {//autenticar
+	// MÉTODO CORRIGIDO
+	public Optional<UsuarioLogin> autenticarUsuario(Optional<UsuarioLogin> usuarioLogin) {
 
 		if (usuarioLogin.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Credenciais de login inválidas.");
@@ -93,39 +96,39 @@ public class UsuarioService { //logica de autent. e criptografia de senha
 		var credenciais = new UsernamePasswordAuthenticationToken(usuarioLogin.get().getEmail(),
 				usuarioLogin.get().getSenha());
 
-		Authentication authentication = null;
+		Authentication authentication;
 		try {
-
 			authentication = authenticationManager.authenticate(credenciais);
 		} catch (Exception e) {
-
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!", e);
 		}
 
-		if (usuario.isPresent()) {
-	
-			    usuarioLogin.get().setId(usuario.get().getId());
-			    usuarioLogin.get().setNomeCompleto(usuario.get().getNomeCompleto());
-			    usuarioLogin.get().setEmail(usuario.get().getEmail());
-			
-			    // ADICIONE ESTA LINHA:
-			    usuarioLogin.get().setTipoUsuario(usuario.get().getTipoUsuario());
-			
-			    usuarioLogin.get().setSenha(""); // Limpa a senha
-			    usuarioLogin.get().setToken(gerarToken(usuarioLogin.get().getEmail()));
-			
-			    return usuarioLogin;
+		if (authentication.isAuthenticated()) {
+			Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioLogin.get().getEmail());
+
+			if (usuario.isPresent()) {
+				usuarioLogin.get().setId(usuario.get().getId());
+				usuarioLogin.get().setNomeCompleto(usuario.get().getNomeCompleto());
+				usuarioLogin.get().setEmail(usuario.get().getEmail());
+				
+                // CORREÇÃO: Adiciona a linha para retornar o tipo do usuário
+				usuarioLogin.get().setTipoUsuario(usuario.get().getTipoUsuario());
+				
+                usuarioLogin.get().setSenha("");
+				usuarioLogin.get().setToken(gerarToken(usuarioLogin.get().getEmail()));
+
+				return usuarioLogin;
+			}
 		}
 
 		return Optional.empty();
 	}
 
-	public void deleteById(Long id) { //DELETE?
+	public void deleteById(Long id) {
 
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
 
 		if (usuario.isEmpty()) {
-
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado!");
 		}
 
