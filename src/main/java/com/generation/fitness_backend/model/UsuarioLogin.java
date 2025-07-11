@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Size;
 public class UsuarioLogin {
 
     private Long id;
-    private String nomeCompleto; 
-    
+    private String nomeCompleto;
+
     @NotBlank(message = "O atributo Email é obrigatório!")
     @Email(message = "O atributo Email deve ser válido!")
     private String email;
@@ -62,10 +62,6 @@ public class UsuarioLogin {
 
     public void setTipoUsuario(TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
 
     public String getToken() {
