@@ -4,18 +4,20 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class UsuarioLogin { //dto - recebe retorna dados da op de login- email senha token e info basica
+public class UsuarioLogin {
 
-    private Long id; //LONG!!!!
+    private Long id;
     private String nomeCompleto; 
     
     @NotBlank(message = "O atributo Email é obrigatório!")
     @Email(message = "O atributo Email deve ser válido!")
-    private String email; //EMAIL USERNAME IMPORTANTE
+    private String email;
 
     @NotBlank(message = "O atributo Senha é obrigatório!")
     @Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres")
     private String senha;
+
+    private TipoUsuario tipoUsuario;
 
     private String token;
 
@@ -48,6 +50,18 @@ public class UsuarioLogin { //dto - recebe retorna dados da op de login- email s
 
     public String getSenha() {
         return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario() {
+        this.tipoUsuario = tipoUsuario;
     }
 
     public void setSenha(String senha) {
