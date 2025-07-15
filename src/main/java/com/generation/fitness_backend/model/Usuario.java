@@ -32,6 +32,10 @@ public class Usuario {
 	@Column(nullable = false, length = 255)
 	private String nomeCompleto;
 
+	@Column(length = 100, nullable = false)
+	@Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.")
+	private String urlImagem;
+
 	@NotNull(message = "O atributo Email é obrigatório!")
 	@Email(message = "O atributo Email deve ser válido!")
 	@Column(length = 100, nullable = false, unique = true)
