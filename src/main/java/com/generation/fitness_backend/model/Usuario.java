@@ -72,8 +72,7 @@ public class Usuario {
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime dataCadastro;
 	
-	@CreationTimestamp
-	@Column(nullable = true, updatable = false)
+	@Column(nullable = true)
 	private LocalDateTime dataRemocao;
 
 	public Long getId() {
