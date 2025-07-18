@@ -25,6 +25,14 @@ public class UsuarioLogin {
     public UsuarioLogin() {
     }
 
+    public UsuarioLogin(Usuario usuario) {
+        this.id = usuario.getId();
+        this.nomeCompleto = usuario.getNomeCompleto();
+        this.email = usuario.getEmail();
+        this.senha = "";
+        this.tipoUsuario = usuario.getTipoUsuario();
+    }
+
     public Long getId() {
         return id;
     }
