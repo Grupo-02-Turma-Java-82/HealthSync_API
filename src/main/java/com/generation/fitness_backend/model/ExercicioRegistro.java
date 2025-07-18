@@ -14,7 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 
-public class ExercicoRegistro {
+public class ExercicioRegistro {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
 	private Long id;

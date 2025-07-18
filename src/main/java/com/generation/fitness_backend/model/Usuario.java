@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.generation.fitness_backend.enums.TipoUsuario;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
@@ -14,7 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -57,28 +57,49 @@ public class Usuario {
 	@Column(length = 100, nullable = false)
 	private Integer alturaCm;
 
-	@NotNull(message = "O peso é obrigatório")
-	@Column(length = 100, nullable = false)
-	private BigDecimal pesoKg;
-	
-    @Transient // Indica que este campo não será persistido no banco de dados
-    private Double imc;
+    @NotNull(message = "O peso é obrigatório")
+    @Column(length = 100, nullable = false)
+    private BigDecimal pesoKg;
 
-	@Column(length = 255, nullable = false)
-	private String objetivoPrincipal;
-	
-	@Enumerated(EnumType.STRING)
-	@NotNull(message = "O tipo do usuario é obrigatorio")
-	@Column(name = "tipo", nullable = false, length = 50)
-	private TipoUsuario tipoUsuario;
+    @Column(length = 255, nullable = false)
+    private String objetivoPrincipal;
 
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false)
-	private LocalDateTime dataCadastro;
-	
-	@CreationTimestamp
-	@Column(nullable = true, updatable = false)
-	private LocalDateTime dataRemocao;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo", nullable = false, length = 50)
+    private TipoUsuario tipoUsuario;
+
+    @Column(nullable = false)
+    private boolean ativo = true; //usuario ativo ao ser criado
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dataCadastro;
+
+    @Column(nullable = true)
+    private LocalDateTime dataDesativacao; //dataremocao
+
+    public Usuario() {
+        //qd criado o usuario eh ativo por padrao
+        this.ativo = true;
+    }
+
+    public Usuario(Long id, String nomeCompleto, String urlImagem, String email, String senha, LocalDate dataNascimento,
+                   String genero, Integer alturaCm, BigDecimal pesoKg, String objetivoPrincipal, TipoUsuario tipoUsuario,
+                   boolean ativo) {
+        this.id = id;
+        this.nomeCompleto = nomeCompleto;
+        this.urlImagem = urlImagem;
+        this.email = email;
+        this.senha = senha;
+        this.dataNascimento = dataNascimento;
+        this.genero = genero;
+        this.alturaCm = alturaCm;
+        this.pesoKg = pesoKg;
+        this.objetivoPrincipal = objetivoPrincipal;
+        this.tipoUsuario = tipoUsuario;
+        this.ativo = ativo; //inicializa
+
+    }
 
 	public Long getId() {
 		return id;
@@ -96,9 +117,17 @@ public class Usuario {
 		this.nomeCompleto = nomeCompleto;
 	}
 
-	public String getEmail() {
-		return email;
-	}
+    public String getUrlImagem() {
+        return urlImagem;
+    }
+
+    public void setUrlImagem(String urlImagem) {
+        this.urlImagem = urlImagem;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 
 	public void setEmail(String email) {
 		this.email = email;
@@ -140,30 +169,13 @@ public class Usuario {
 		return pesoKg;
 	}
 
-	public void setPesoKg(BigDecimal pesoKg) {
-		this.pesoKg = pesoKg;
-	}
-	
-    // Getter para o IMC (calculado dinamicamente)
-    public Double getImc() {
-        if (this.pesoKg != null && this.alturaCm != null && this.alturaCm > 0) {
-        	
-        	Double alturaCalc = (double) (this.alturaCm * this.alturaCm);
-            return (this.pesoKg.doubleValue() / (alturaCalc)) * 10000;
-        }
-
-        return null;
+    public void setPesoKg(BigDecimal pesoKg) {
+        this.pesoKg = pesoKg;
     }
 
-    // O setter para o IMC não é necessário, pois ele é calculado
-    // Mas se você quiser ter um (por exemplo, para DTOs que o aceitem), pode adicionar
-    public void setImc(Double imc) {
-        this.imc = imc;
+    public String getObjetivoPrincipal() {
+        return objetivoPrincipal;
     }
-
-	public String getObjetivoPrincipal() {
-		return objetivoPrincipal;
-	}
 
 	public void setObjetivoPrincipal(String objetivoPrincipal) {
 		this.objetivoPrincipal = objetivoPrincipal;
@@ -177,19 +189,27 @@ public class Usuario {
 		this.tipoUsuario = tipoUsuario;
 	}
 
-	public LocalDateTime getDataCadastro() {
-		return dataCadastro;
-	}
+    public boolean isAtivo() {
+        return ativo;
+    }
 
-	public void setDataCadastro(LocalDateTime dataCadastro) {
-		this.dataCadastro = dataCadastro;
-	}
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
 
-	public LocalDateTime getDataRemocao() {
-		return dataRemocao;
-	}
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
+    }
 
-	public void setDataRemocao(LocalDateTime dataRemocao) {
-		this.dataRemocao = dataRemocao;
-	}
+    public void setDataCadastro(LocalDateTime dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
+    public LocalDateTime getDataDesativacao() {
+        return dataDesativacao;
+    }
+
+    public void setDataDesativacao(LocalDateTime dataDesativacao) {
+        this.dataDesativacao = dataDesativacao;
+    }
 }

@@ -123,10 +123,10 @@ public class UsuarioController {
 	})
 	@PostMapping("/logar")
 	public ResponseEntity<UsuarioLogin> logar(@RequestBody Optional<UsuarioLogin> usuarioLogin) {
-		Optional<UsuarioLogin> usuarioAutenticado = usuarioService.autenticarUsuario(usuarioLogin);
+		Optional<UsuarioLogin> tokenResponse = usuarioService.autenticarUsuario(usuarioLogin);
 
-		if (usuarioAutenticado.isPresent()) {
-			return ResponseEntity.ok(usuarioAutenticado.get());
+		if (tokenResponse.isPresent()) {
+			return ResponseEntity.ok(tokenResponse.get());
 		} else {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!");
 		}

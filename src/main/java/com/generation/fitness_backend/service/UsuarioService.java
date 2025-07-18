@@ -3,6 +3,7 @@ package com.generation.fitness_backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.generation.fitness_backend.enums.TipoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,106 +42,109 @@ public class UsuarioService { //logica de autent. e criptografia de senha
 		return usuarioRepository.findByEmail(email);
 	}
 
-	public Optional<Usuario> cadastrarUsuario(Usuario usuario) { //cadastrar
+    public Optional<Usuario> cadastrarUsuario(Usuario usuario) {
+        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+            return Optional.empty();
+        }
+        usuario.setSenha(criptografarSenha(usuario.getSenha()));
 
-		if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
-			return Optional.empty();
-		}
+        //define a role padrao para novos cadastros se o tipousuario n for especificado = aluno
+        if (usuario.getTipoUsuario() == null) {
+            usuario.setTipoUsuario(TipoUsuario.ALUNO);
+        }
+        usuario.setAtivo(true);
 
-		usuario.setSenha(criptografarSenha(usuario.getSenha()));
+        return Optional.of(usuarioRepository.save(usuario));
+    }
 
-		return Optional.of(usuarioRepository.save(usuario));
-	}
+    public Optional<Usuario> atualizarUsuario(Usuario usuario) {
 
-	// MÉTODO CORRIGIDO
-	public Optional<Usuario> atualizarUsuario(Usuario usuario) {
+        if (usuario.getId() == null || usuarioRepository.findById(usuario.getId()).isEmpty()) {
+            return Optional.empty();
+        }
+        Optional<Usuario> buscaUsuarioExistente = usuarioRepository.findById(usuario.getId());
 
-		if (usuario.getId() == null || usuarioRepository.findById(usuario.getId()).isEmpty()) {
-			return Optional.empty();
-		}
+        Optional<Usuario> buscaUsuarioPorEmail = usuarioRepository.findByEmail(usuario.getEmail());
+        if (buscaUsuarioPorEmail.isPresent() && !buscaUsuarioPorEmail.get().getId().equals(usuario.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já cadastrado por outro usuário!");
+        }
+        Usuario usuarioExistente = buscaUsuarioExistente.get();
 
-		Optional<Usuario> buscaUsuarioPorEmail = usuarioRepository.findByEmail(usuario.getEmail());
-		if (buscaUsuarioPorEmail.isPresent() && !buscaUsuarioPorEmail.get().getId().equals(usuario.getId())) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já cadastrado por outro usuário!");
-		}
+        if (usuario.getSenha() != null && !usuario.getSenha().isBlank()) {
+            usuarioExistente.setSenha(criptografarSenha(usuario.getSenha()));
+        } else {
+            //dx a senha antiga se nenhuma nova for fornecida
+            usuario.setSenha(usuarioExistente.getSenha());
+        }
 
-		// CORREÇÃO: Busca o usuário do banco para atualizá-lo
-		Usuario usuarioExistente = usuarioRepository.findById(usuario.getId()).get();
+        if (usuario.getTipoUsuario() != null) {
+            usuarioExistente.setTipoUsuario(usuario.getTipoUsuario());
+        }
+        usuarioExistente.setAtivo(usuario.isAtivo());
 
-		// CORREÇÃO: Atualiza a senha apenas se uma nova for fornecida
-		if (usuario.getSenha() != null && !usuario.getSenha().isBlank()) {
-			usuarioExistente.setSenha(criptografarSenha(usuario.getSenha()));
-		}
+        usuarioExistente.setNomeCompleto(usuario.getNomeCompleto());
+        usuarioExistente.setEmail(usuario.getEmail());
+        usuarioExistente.setDataNascimento(usuario.getDataNascimento());
+        usuarioExistente.setGenero(usuario.getGenero());
+        usuarioExistente.setAlturaCm(usuario.getAlturaCm());
+        usuarioExistente.setPesoKg(usuario.getPesoKg());
+        usuarioExistente.setObjetivoPrincipal(usuario.getObjetivoPrincipal());
+        usuarioExistente.setUrlImagem(usuario.getUrlImagem());
+        usuarioExistente.setDataDesativacao(usuario.getDataDesativacao());
 
-		// CORREÇÃO: Copia todos os dados do objeto recebido para o objeto do banco
-		usuarioExistente.setNomeCompleto(usuario.getNomeCompleto());
-		usuarioExistente.setEmail(usuario.getEmail());
-		usuarioExistente.setDataNascimento(usuario.getDataNascimento());
-		usuarioExistente.setGenero(usuario.getGenero());
-		usuarioExistente.setAlturaCm(usuario.getAlturaCm());
-		usuarioExistente.setPesoKg(usuario.getPesoKg());
-		usuarioExistente.setObjetivoPrincipal(usuario.getObjetivoPrincipal());
-        // Se houver mais campos para atualizar, adicione-os aqui
+        return Optional.of(usuarioRepository.save(usuarioExistente));
+    }
 
-		// CORREÇÃO: Salva o objeto que foi de fato atualizado
-		return Optional.of(usuarioRepository.save(usuarioExistente));
-	}
+    public Optional<UsuarioLogin> autenticarUsuario(Optional<UsuarioLogin> usuarioLogin) {
+        if (usuarioLogin.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "credenciais de login invalidas.");
+        }
+        var credenciais = new UsernamePasswordAuthenticationToken(usuarioLogin.get().getEmail(),
+                usuarioLogin.get().getSenha());
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(credenciais);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "usuario ou senha invalidos!", e);
+        }
 
-	// MÉTODO CORRIGIDO
-	public Optional<UsuarioLogin> autenticarUsuario(Optional<UsuarioLogin> usuarioLogin) {
+        if (authentication.isAuthenticated()) {
+            //busca o usuario completo no banco de dados pelo email
+            Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioLogin.get().getEmail());
 
-		if (usuarioLogin.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Credenciais de login inválidas.");
-		}
+            if (usuario.isPresent()) {
+                //verifica se o usuario esta ativo
+                if (!usuario.get().isAtivo()) {
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "usuario inativo!");
+                }
 
-		var credenciais = new UsernamePasswordAuthenticationToken(usuarioLogin.get().getEmail(),
-				usuarioLogin.get().getSenha());
+                //gera o token jwt incluindo a role
+                String token = gerarToken(usuario.get().getEmail(), usuario.get().getTipoUsuario()); //passa email e role do usuario do banco
 
-		Authentication authentication;
-		try {
-			authentication = authenticationManager.authenticate(credenciais);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!", e);
-		}
+                UsuarioLogin retornoLogin = new UsuarioLogin(usuario.get()); //construtor q recebe Usuario
+                retornoLogin.setToken(token);
 
-		if (authentication.isAuthenticated()) {
-			Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioLogin.get().getEmail());
+                return Optional.of(retornoLogin); //retorna o optional usuariologin populado
+            }
+        }
+        return Optional.empty();
+    }
+    //todo: calc imc
 
-			if (usuario.isPresent()) {
-				usuarioLogin.get().setId(usuario.get().getId());
-				usuarioLogin.get().setNomeCompleto(usuario.get().getNomeCompleto());
-				usuarioLogin.get().setEmail(usuario.get().getEmail());
-				
-                // CORREÇÃO: Adiciona a linha para retornar o tipo do usuário
-				usuarioLogin.get().setTipoUsuario(usuario.get().getTipoUsuario());
-				
-                usuarioLogin.get().setSenha("");
-				usuarioLogin.get().setToken(gerarToken(usuarioLogin.get().getEmail()));
+    public void deleteById(Long id) {
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        if (usuario.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado!");
+        }
+        usuarioRepository.deleteById(id);
+    }
 
-				return usuarioLogin;
-			}
-		}
+    private String criptografarSenha(String senha) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(senha);
+    }
 
-		return Optional.empty();
-	}
-
-	public void deleteById(Long id) {
-
-		Optional<Usuario> usuario = usuarioRepository.findById(id);
-
-		if (usuario.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado!");
-		}
-
-		usuarioRepository.deleteById(id);
-	}
-
-	private String criptografarSenha(String senha) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		return encoder.encode(senha);
-	}
-
-	private String gerarToken(String email) {
-		return "Bearer " + jwtService.generateToken(email);
-	}
+    private String gerarToken(String email, TipoUsuario tipoUsuario) {
+        return "Bearer " + jwtService.generateToken(email, tipoUsuario);
+    }
 }
