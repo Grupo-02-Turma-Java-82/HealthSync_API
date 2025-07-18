@@ -21,26 +21,26 @@ import com.generation.fitness_backend.security.JwtService;
 @Service
 public class UsuarioService { //logica de autent. e criptografia de senha
 
-	@Autowired
-	private UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-	@Autowired
-	private JwtService jwtService; //injetar jwt service
+    @Autowired
+    private JwtService jwtService;
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-	public List<Usuario> getAll() { //buscar todos
-		return usuarioRepository.findAll();
-	}
+    public List<Usuario> getAll() { //buscar todos
+        return usuarioRepository.findAll();
+    }
 
-	public Optional<Usuario> getById(Long id) { // busca pelo ID
-		return usuarioRepository.findById(id);
-	}
+    public Optional<Usuario> getById(Long id) { // busca pelo ID
+        return usuarioRepository.findById(id);
+    }
 
-	public Optional<Usuario> getByEmail(String email) { // busca pelo email
-		return usuarioRepository.findByEmail(email);
-	}
+    public Optional<Usuario> getByEmail(String email) { // busca pelo email
+        return usuarioRepository.findByEmail(email);
+    }
 
     public Optional<Usuario> cadastrarUsuario(Usuario usuario) {
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {

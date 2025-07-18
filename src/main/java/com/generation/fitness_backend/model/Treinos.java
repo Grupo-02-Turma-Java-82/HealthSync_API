@@ -2,15 +2,7 @@ package com.generation.fitness_backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -29,8 +21,9 @@ public class Treinos {
 	@Size(max = 500)
 	private String descricao;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "treinos", cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties("treinos")
+	@ManyToOne //muitos treinos para um usuario
+	@JoinColumn(name = "id_usuario", nullable = false) //coluna da chave estrangeira na tabela tb_treinos
+	@JsonIgnoreProperties({"treinos", "dataCadastro", "dataDesativacao"}) //ignora a lista de treinos em usuario para evitar recursao infinita
 	private Usuario usuario;
 
 	public Long getId() {

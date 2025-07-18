@@ -22,9 +22,6 @@ public class UsuarioLogin {
 
     private String token;
 
-    public UsuarioLogin() {
-    }
-
     public UsuarioLogin(Usuario usuario) {
         this.id = usuario.getId();
         this.nomeCompleto = usuario.getNomeCompleto();

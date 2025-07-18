@@ -24,38 +24,38 @@ import jakarta.validation.constraints.Size;
 @Table(name = "tb_usuarios")
 public class Usuario {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
+    private Long id;
 
-	@NotBlank(message = "O atributo Nome Completo é obrigatório!")
-	@Column(nullable = false, length = 255)
-	private String nomeCompleto;
+    @NotBlank(message = "O atributo Nome Completo é obrigatório!")
+    @Column(nullable = false, length = 255)
+    private String nomeCompleto;
 
-	@Column(length = 100, nullable = false)
-	@Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.")
-	private String urlImagem;
+    @Column(length = 100, nullable = false)
+    @Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.")
+    private String urlImagem;
 
-	@NotNull(message = "O atributo Email é obrigatório!")
-	@Email(message = "O atributo Email deve ser válido!")
-	@Column(length = 100, nullable = false, unique = true)
-	private String email;
+    @NotNull(message = "O atributo Email é obrigatório!")
+    @Email(message = "O atributo Email deve ser válido!")
+    @Column(length = 100, nullable = false, unique = true)
+    private String email;
 
-	@NotBlank(message = "O atributo Senha é obrigatório!")
-	@Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres")
-	@Column(length = 100, nullable = false)
-	private String senha;
+    @NotBlank(message = "O atributo Senha é obrigatório!")
+    @Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres")
+    @Column(length = 100, nullable = false)
+    private String senha;
 
-	@NotNull(message = "A data de nascimento é obrigatória")
-	@Column(length = 100, nullable = false)
-	private LocalDate dataNascimento;
+    @NotNull(message = "A data de nascimento é obrigatória")
+    @Column(length = 100, nullable = false)
+    private LocalDate dataNascimento;
 
-	@Column(length = 100, nullable = false)
-	private String genero;
+    @Column(length = 100, nullable = false)
+    private String genero;
 
-	@NotNull(message = "A altura é obrigatória")
-	@Column(length = 100, nullable = false)
-	private Integer alturaCm;
+    @NotNull(message = "A altura é obrigatória")
+    @Column(length = 100, nullable = false)
+    private Integer alturaCm;
 
     @NotNull(message = "O peso é obrigatório")
     @Column(length = 100, nullable = false)
@@ -101,21 +101,21 @@ public class Usuario {
 
     }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getNomeCompleto() {
-		return nomeCompleto;
-	}
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
 
-	public void setNomeCompleto(String nomeCompleto) {
-		this.nomeCompleto = nomeCompleto;
-	}
+    public void setNomeCompleto(String nomeCompleto) {
+        this.nomeCompleto = nomeCompleto;
+    }
 
     public String getUrlImagem() {
         return urlImagem;
@@ -129,45 +129,45 @@ public class Usuario {
         return email;
     }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getSenha() {
-		return senha;
-	}
+    public String getSenha() {
+        return senha;
+    }
 
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
-	public LocalDate getDataNascimento() {
-		return dataNascimento;
-	}
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
 
-	public void setDataNascimento(LocalDate dataNascimento) {
-		this.dataNascimento = dataNascimento;
-	}
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
 
-	public String getGenero() {
-		return genero;
-	}
+    public String getGenero() {
+        return genero;
+    }
 
-	public void setGenero(String genero) {
-		this.genero = genero;
-	}
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
 
-	public Integer getAlturaCm() {
-		return alturaCm;
-	}
+    public Integer getAlturaCm() {
+        return alturaCm;
+    }
 
-	public void setAlturaCm(Integer alturaCm) {
-		this.alturaCm = alturaCm;
-	}
+    public void setAlturaCm(Integer alturaCm) {
+        this.alturaCm = alturaCm;
+    }
 
-	public BigDecimal getPesoKg() {
-		return pesoKg;
-	}
+    public BigDecimal getPesoKg() {
+        return pesoKg;
+    }
 
     public void setPesoKg(BigDecimal pesoKg) {
         this.pesoKg = pesoKg;
@@ -177,17 +177,17 @@ public class Usuario {
         return objetivoPrincipal;
     }
 
-	public void setObjetivoPrincipal(String objetivoPrincipal) {
-		this.objetivoPrincipal = objetivoPrincipal;
-	}
-	
-	public TipoUsuario getTipoUsuario() {
-		return tipoUsuario;
-	}
+    public void setObjetivoPrincipal(String objetivoPrincipal) {
+        this.objetivoPrincipal = objetivoPrincipal;
+    }
 
-	public void setTipoUsuario(TipoUsuario tipoUsuario) {
-		this.tipoUsuario = tipoUsuario;
-	}
+    public TipoUsuario getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
 
     public boolean isAtivo() {
         return ativo;

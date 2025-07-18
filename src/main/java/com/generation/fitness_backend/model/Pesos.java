@@ -3,19 +3,13 @@ package com.generation.fitness_backend.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -34,8 +28,9 @@ public class Pesos {
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime dataRegistro;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pesos", cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties("pesos")
+	@ManyToOne
+	@JoinColumn(name = "id_usuario", nullable = false)
+	@JsonIgnoreProperties({"pesos", "dataCadastro", "dataDesativacao"})
 	private Usuario usuario;
 
 	public Long getId() {
