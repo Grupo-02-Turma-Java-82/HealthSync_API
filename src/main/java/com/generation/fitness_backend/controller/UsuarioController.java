@@ -122,13 +122,11 @@ public class UsuarioController {
 			@ApiResponse(responseCode = "401", description = "Não autorizado - Usuário ou senha inválidos")
 	})
 	@PostMapping("/logar")
-	public ResponseEntity<UsuarioLogin> logar(@RequestBody Optional<UsuarioLogin> usuarioLogin) {
-		Optional<UsuarioLogin> tokenResponse = usuarioService.autenticarUsuario(usuarioLogin);
+	public ResponseEntity<UsuarioLogin> logar(@Valid @RequestBody UsuarioLogin usuarioLogin) {
 
-		if (tokenResponse.isPresent()) {
-			return ResponseEntity.ok(tokenResponse.get());
-		} else {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!");
-		}
+		// Agora o serviço recebe o objeto diretamente
+		return usuarioService.autenticarUsuario(usuarioLogin)
+				.map(ResponseEntity::ok)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!"));
 	}
 }

@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.generation.fitness_backend.model.Usuario;
 
-public class UserDetailsImpl implements UserDetails { //MAPEAR EMAIL DO USUARIO PRA USERNAME""
+public class UserDetailsImpl implements UserDetails { // MAPEAR EMAIL DO USUARIO PRA USERNAME""
 
     private static final long serialVersionUID = 1L;
 
@@ -18,12 +18,11 @@ public class UserDetailsImpl implements UserDetails { //MAPEAR EMAIL DO USUARIO 
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Usuario user) {    //identificador unico
-        this.username = user.getEmail(); //chamar o email
+    public UserDetailsImpl(Usuario user) { // identificador unico
+        this.username = user.getEmail(); // chamar o email
         this.password = user.getSenha();
         this.authorities = new ArrayList<>();
-        this.authorities.add(new SimpleGrantedAuthority
-                ("role_" + user.getTipoUsuario().name()));
+        this.authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getTipoUsuario().name()));
     }
 
     public UserDetailsImpl() {
@@ -31,7 +30,7 @@ public class UserDetailsImpl implements UserDetails { //MAPEAR EMAIL DO USUARIO 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //agr retorna roles
+        // agr retorna roles
         return authorities;
     }
 

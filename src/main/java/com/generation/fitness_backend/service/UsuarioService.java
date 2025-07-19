@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,7 +19,7 @@ import com.generation.fitness_backend.repository.UsuarioRepository;
 import com.generation.fitness_backend.security.JwtService;
 
 @Service
-public class UsuarioService { //logica de autent. e criptografia de senha
+public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -30,15 +30,18 @@ public class UsuarioService { //logica de autent. e criptografia de senha
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public List<Usuario> getAll() { //buscar todos
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public List<Usuario> getAll() {
         return usuarioRepository.findAll();
     }
 
-    public Optional<Usuario> getById(Long id) { // busca pelo ID
+    public Optional<Usuario> getById(Long id) {
         return usuarioRepository.findById(id);
     }
 
-    public Optional<Usuario> getByEmail(String email) { // busca pelo email
+    public Optional<Usuario> getByEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
 
@@ -48,7 +51,6 @@ public class UsuarioService { //logica de autent. e criptografia de senha
         }
         usuario.setSenha(criptografarSenha(usuario.getSenha()));
 
-        //define a role padrao para novos cadastros se o tipousuario n for especificado = aluno
         if (usuario.getTipoUsuario() == null) {
             usuario.setTipoUsuario(TipoUsuario.ALUNO);
         }
@@ -73,7 +75,6 @@ public class UsuarioService { //logica de autent. e criptografia de senha
         if (usuario.getSenha() != null && !usuario.getSenha().isBlank()) {
             usuarioExistente.setSenha(criptografarSenha(usuario.getSenha()));
         } else {
-            //dx a senha antiga se nenhuma nova for fornecida
             usuario.setSenha(usuarioExistente.getSenha());
         }
 
@@ -95,41 +96,39 @@ public class UsuarioService { //logica de autent. e criptografia de senha
         return Optional.of(usuarioRepository.save(usuarioExistente));
     }
 
-    public Optional<UsuarioLogin> autenticarUsuario(Optional<UsuarioLogin> usuarioLogin) {
-        if (usuarioLogin.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "credenciais de login invalidas.");
-        }
-        var credenciais = new UsernamePasswordAuthenticationToken(usuarioLogin.get().getEmail(),
-                usuarioLogin.get().getSenha());
+    public Optional<UsuarioLogin> autenticarUsuario(UsuarioLogin usuarioLogin) {
+        var credenciais = new UsernamePasswordAuthenticationToken(usuarioLogin.getEmail(),
+                usuarioLogin.getSenha());
+
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(credenciais);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "usuario ou senha invalidos!", e);
+            return Optional.empty();
         }
 
         if (authentication.isAuthenticated()) {
-            //busca o usuario completo no banco de dados pelo email
-            Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioLogin.get().getEmail());
+            Optional<Usuario> usuario = usuarioRepository.findByEmail(usuarioLogin.getEmail());
 
             if (usuario.isPresent()) {
-                //verifica se o usuario esta ativo
                 if (!usuario.get().isAtivo()) {
-                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "usuario inativo!");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário inativo!");
                 }
 
-                //gera o token jwt incluindo a role
-                String token = gerarToken(usuario.get().getEmail(), usuario.get().getTipoUsuario()); //passa email e role do usuario do banco
+                String token = gerarToken(usuario.get().getEmail(), usuario.get().getTipoUsuario());
 
-                UsuarioLogin retornoLogin = new UsuarioLogin(usuario.get()); //construtor q recebe Usuario
+                UsuarioLogin retornoLogin = new UsuarioLogin();
+                retornoLogin.setId(usuario.get().getId());
+                retornoLogin.setNomeCompleto(usuario.get().getNomeCompleto());
+                retornoLogin.setEmail(usuario.get().getEmail());
+                retornoLogin.setTipoUsuario(usuario.get().getTipoUsuario());
                 retornoLogin.setToken(token);
 
-                return Optional.of(retornoLogin); //retorna o optional usuariologin populado
+                return Optional.of(retornoLogin);
             }
         }
         return Optional.empty();
     }
-    //todo: calc imc
 
     public void deleteById(Long id) {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
@@ -140,8 +139,7 @@ public class UsuarioService { //logica de autent. e criptografia de senha
     }
 
     private String criptografarSenha(String senha) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.encode(senha);
+        return passwordEncoder.encode(senha);
     }
 
     private String gerarToken(String email, TipoUsuario tipoUsuario) {

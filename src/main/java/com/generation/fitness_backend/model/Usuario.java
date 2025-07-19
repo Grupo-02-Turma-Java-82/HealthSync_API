@@ -69,23 +69,23 @@ public class Usuario {
     private TipoUsuario tipoUsuario;
 
     @Column(nullable = false)
-    private boolean ativo = true; //usuario ativo ao ser criado
+    private boolean ativo = true; // usuario ativo ao ser criado
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
 
     @Column(nullable = true)
-    private LocalDateTime dataDesativacao; //dataremocao
+    private LocalDateTime dataDesativacao; // dataremocao
 
     public Usuario() {
-        //qd criado o usuario eh ativo por padrao
+        // qd criado o usuario eh ativo por padrao
         this.ativo = true;
     }
 
     public Usuario(Long id, String nomeCompleto, String urlImagem, String email, String senha, LocalDate dataNascimento,
-                   String genero, Integer alturaCm, BigDecimal pesoKg, String objetivoPrincipal, TipoUsuario tipoUsuario,
-                   boolean ativo) {
+            String genero, Integer alturaCm, BigDecimal pesoKg, String objetivoPrincipal, TipoUsuario tipoUsuario,
+            boolean ativo) {
         this.id = id;
         this.nomeCompleto = nomeCompleto;
         this.urlImagem = urlImagem;
@@ -97,7 +97,7 @@ public class Usuario {
         this.pesoKg = pesoKg;
         this.objetivoPrincipal = objetivoPrincipal;
         this.tipoUsuario = tipoUsuario;
-        this.ativo = ativo; //inicializa
+        this.ativo = ativo; // inicializa
 
     }
 

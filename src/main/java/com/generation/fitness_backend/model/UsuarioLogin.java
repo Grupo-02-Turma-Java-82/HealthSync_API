@@ -22,12 +22,7 @@ public class UsuarioLogin {
 
     private String token;
 
-    public UsuarioLogin(Usuario usuario) {
-        this.id = usuario.getId();
-        this.nomeCompleto = usuario.getNomeCompleto();
-        this.email = usuario.getEmail();
-        this.senha = "";
-        this.tipoUsuario = usuario.getTipoUsuario();
+    public UsuarioLogin() {
     }
 
     public Long getId() {

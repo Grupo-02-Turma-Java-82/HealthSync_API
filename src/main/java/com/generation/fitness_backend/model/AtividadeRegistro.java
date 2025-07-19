@@ -1,7 +1,6 @@
 package com.generation.fitness_backend.model;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -18,11 +17,9 @@ public class AtividadeRegistro {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	// Relacionamento Many-to-One com Usuario
-	// Muitas Atividades de Registro podem pertencer a um único Usuário
 	@ManyToOne
 	@JoinColumn(name = "id_usuario", nullable = false)
-	@JsonIgnoreProperties({"atividadesRegistro", "pesos", "treinos"})
+	@JsonIgnoreProperties({ "atividadesRegistro", "pesos", "treinos" })
 	private Usuario usuario;
 
 	@NotBlank(message = "O atributo Título é obrigatório!")
@@ -43,8 +40,6 @@ public class AtividadeRegistro {
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime dataCriacao;
-
-	// Getters e Setters
 
 	public Long getId() {
 		return id;
