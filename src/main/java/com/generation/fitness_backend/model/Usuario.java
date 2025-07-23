@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.generation.fitness_backend.enums.TipoUsuario;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -25,7 +26,7 @@ import jakarta.validation.constraints.Size;
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "O atributo Nome Completo é obrigatório!")
@@ -41,6 +42,7 @@ public class Usuario {
     @Column(length = 100, nullable = false, unique = true)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "O atributo Senha é obrigatório!")
     @Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres")
     @Column(length = 100, nullable = false)
@@ -69,17 +71,16 @@ public class Usuario {
     private TipoUsuario tipoUsuario;
 
     @Column(nullable = false)
-    private boolean ativo = true; // usuario ativo ao ser criado
+    private boolean ativo = true;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
 
     @Column(nullable = true)
-    private LocalDateTime dataDesativacao; // dataremocao
+    private LocalDateTime dataDesativacao;
 
     public Usuario() {
-        // qd criado o usuario eh ativo por padrao
         this.ativo = true;
     }
 

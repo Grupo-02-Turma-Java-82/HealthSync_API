@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 @Entity
 @Table(name = "tb_treinos")
 public class Treinos {
@@ -21,10 +23,14 @@ public class Treinos {
 	@Size(max = 500)
 	private String descricao;
 
-	@ManyToOne //muitos treinos para um usuario
-	@JoinColumn(name = "id_usuario", nullable = false) //coluna da chave estrangeira na tabela tb_treinos
-	@JsonIgnoreProperties({"treinos", "dataCadastro", "dataDesativacao"}) //ignora a lista de treinos em usuario para evitar recursao infinita
+	@ManyToOne
+	@JoinColumn(name = "id_usuario", nullable = false)
+	@JsonIgnoreProperties({"treinos", "dataCadastro", "dataDesativacao"})
 	private Usuario usuario;
+
+	@OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnoreProperties("treino")
+	private List<TreinoExercicio> treinoExercicios;
 
 	public Long getId() {
 		return id;
@@ -58,4 +64,11 @@ public class Treinos {
 		this.usuario = usuario;
 	}
 
+	public List<TreinoExercicio> getTreinoExercicios() {
+		return treinoExercicios;
+	}
+
+	public void setTreinoExercicios(List<TreinoExercicio> treinoExercicios) {
+		this.treinoExercicios = treinoExercicios;
+	}
 }

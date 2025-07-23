@@ -3,25 +3,34 @@ package com.generation.fitness_backend.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "tb_treinoexercicio")
 public class TreinoExercicio {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-    @ManyToMany(mappedBy = "tb_exercicios")
-	@Column(name = "id_exercicio", nullable = false)
-    private Set<Exercicios> exercicio = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name = "id_exercicio", nullable = false)
+	@JsonIgnoreProperties("treinoExercicios")
+	private Exercicios exercicio;
 
-    @ManyToMany(mappedBy = "tb_treinos")
-	@Column(name = "id_treino", nullable = false)
-    private Set<Treinos> treino = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name = "id_treino", nullable = false)
+	@JsonIgnoreProperties("treinoExercicios")
+	private Treinos treino;
+
+	public TreinoExercicio() {
+	}
+
+	public TreinoExercicio(Exercicios exercicio, Treinos treino) {
+		this.exercicio = exercicio;
+		this.treino = treino;
+	}
 
 	public Long getId() {
 		return id;
@@ -31,20 +40,19 @@ public class TreinoExercicio {
 		this.id = id;
 	}
 
-	public Set<Exercicios> getExercicio() {
+	public Exercicios getExercicio() {
 		return exercicio;
 	}
 
-	public void setExercicio(Set<Exercicios> exercicio) {
+	public void setExercicio(Exercicios exercicio) {
 		this.exercicio = exercicio;
 	}
 
-	public Set<Treinos> getTreino() {
+	public Treinos getTreino() {
 		return treino;
 	}
 
-	public void setTreino(Set<Treinos> treino) {
+	public void setTreino(Treinos treino) {
 		this.treino = treino;
 	}
-
 }
