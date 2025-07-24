@@ -63,14 +63,19 @@ public class BasicSecurityConfig {
 		http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.csrf(csrf -> csrf.disable()).cors(withDefaults());
 
-		http.authorizeHttpRequests((auth) -> auth.requestMatchers("/usuarios/logar").permitAll()
-				.requestMatchers("/usuarios/cadastrar").permitAll().requestMatchers("/error/**").permitAll()
-				.requestMatchers(SWAGGER_LIST).permitAll().anyRequest().authenticated())
+		http.authorizeHttpRequests((auth) -> auth
+				.requestMatchers("/usuarios/logar").permitAll()
+				.requestMatchers("/usuarios/cadastrar").permitAll()
+				.requestMatchers("/error/**").permitAll()
+				.requestMatchers(SWAGGER_LIST).permitAll()
+
+				.requestMatchers("/treinos/**").hasAnyRole("ALUNO", "TREINADOR")
+
+				.anyRequest().hasRole("TREINADOR"))
+
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class).httpBasic(withDefaults());
 
 		return http.build();
-
 	}
-
 }
