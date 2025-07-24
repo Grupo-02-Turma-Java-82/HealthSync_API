@@ -124,7 +124,6 @@ public class UsuarioController {
 	@PostMapping("/logar")
 	public ResponseEntity<UsuarioLogin> logar(@Valid @RequestBody UsuarioLogin usuarioLogin) {
 
-		// Agora o serviço recebe o objeto diretamente
 		return usuarioService.autenticarUsuario(usuarioLogin)
 				.map(ResponseEntity::ok)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!"));

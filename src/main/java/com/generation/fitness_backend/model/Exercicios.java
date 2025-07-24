@@ -50,7 +50,6 @@ public class Exercicios {
 	@JsonIgnoreProperties("exercicios")
 	private Categoria categoria;
 
-	//exercicio
 	@OneToMany(mappedBy = "exercicio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnoreProperties("exercicio")
 	private List<TreinoExercicio> treinoExercicios;

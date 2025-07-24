@@ -65,6 +65,6 @@ public class JwtService {
 
     public String extractRole(String token) {
         final Claims claims = extractAllClaims(token);
-        return claims.get("role", String.class); // retorna a role como string
+        return claims.get("role", String.class);
     }
 }

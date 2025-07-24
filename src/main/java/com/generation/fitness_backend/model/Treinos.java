@@ -13,19 +13,19 @@ import java.util.List;
 public class Treinos {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotBlank(message = "O atributo Nome é obrigatório!")
 	@Column(nullable = false, length = 255)
 	private String nome;
-	
+
 	@Size(max = 500)
 	private String descricao;
 
 	@ManyToOne
 	@JoinColumn(name = "id_usuario", nullable = false)
-	@JsonIgnoreProperties({"treinos", "dataCadastro", "dataDesativacao"})
+	@JsonIgnoreProperties({ "treinos", "dataCadastro", "dataDesativacao" })
 	private Usuario usuario;
 
 	@OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

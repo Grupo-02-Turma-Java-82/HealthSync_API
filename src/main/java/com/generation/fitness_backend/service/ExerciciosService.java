@@ -21,7 +21,6 @@ public class ExerciciosService {
 		return exerciciosRepository.findAll();
 	}
 
-
 	public Optional<Exercicios> findById(Long id) {
 		return exerciciosRepository.findById(id);
 	}

@@ -62,29 +62,33 @@ public class TreinoExercicioService {
 
     public Optional<TreinoExercicio> updateTreinoExercicio(TreinoExercicio treinoExercicio) {
         if (treinoExercicio.getId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID da associação de treino e exercício é obrigatório para atualização!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "ID da associação de treino e exercício é obrigatório para atualização!");
         }
 
         return treinoExercicioRepository.findById(treinoExercicio.getId()).map(existingTreinoExercicio -> {
             if (treinoExercicio.getTreino() != null && treinoExercicio.getTreino().getId() != null) {
                 Optional<Treinos> updatedTreino = treinosRepository.findById(treinoExercicio.getTreino().getId());
                 if (updatedTreino.isEmpty()) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Novo Treino para atualização não encontrado!");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Novo Treino para atualização não encontrado!");
                 }
                 existingTreinoExercicio.setTreino(updatedTreino.get());
             }
 
             if (treinoExercicio.getExercicio() != null && treinoExercicio.getExercicio().getId() != null) {
-                Optional<Exercicios> updatedExercicio = exerciciosRepository.findById(treinoExercicio.getExercicio().getId());
+                Optional<Exercicios> updatedExercicio = exerciciosRepository
+                        .findById(treinoExercicio.getExercicio().getId());
                 if (updatedExercicio.isEmpty()) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Novo Exercício para atualização não encontrado!");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Novo Exercício para atualização não encontrado!");
                 }
                 existingTreinoExercicio.setExercicio(updatedExercicio.get());
             }
 
-
             return Optional.of(treinoExercicioRepository.save(existingTreinoExercicio));
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Associação de treino e exercício não encontrada para o ID: " + treinoExercicio.getId()));
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Associação de treino e exercício não encontrada para o ID: " + treinoExercicio.getId()));
     }
 
     public void deleteTreinoExercicio(Long id) {
@@ -105,7 +109,8 @@ public class TreinoExercicioService {
     public List<TreinoExercicio> findByExercicioId(Long exercicioId) {
 
         if (exerciciosRepository.findById(exercicioId).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício com ID " + exercicioId + " não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Exercício com ID " + exercicioId + " não encontrado.");
         }
         return treinoExercicioRepository.findByExercicioId(exercicioId);
     }
