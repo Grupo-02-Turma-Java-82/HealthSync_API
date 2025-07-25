@@ -1,11 +1,13 @@
 package com.generation.fitness_backend.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.generation.fitness_backend.enums.TipoUsuario;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
@@ -80,13 +82,35 @@ public class Usuario {
     @Column(nullable = true)
     private LocalDateTime dataDesativacao;
 
+    @Transient
+    private BigDecimal imc;
+
+    //imc
+    @PostLoad
+    @PrePersist
+    @PreUpdate
+    private void calculateImc() {
+
+        if (this.pesoKg != null && this.alturaCm != null && this.alturaCm > 0) {
+            BigDecimal alturaMetros = BigDecimal.valueOf(this.alturaCm)
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+            if (alturaMetros.compareTo(BigDecimal.ZERO) > 0) {
+                this.imc = this.pesoKg.divide(alturaMetros.multiply(alturaMetros), 2, RoundingMode.HALF_UP);
+            } else {
+                this.imc = null;
+            }
+        } else {
+            this.imc = null;
+        }
+    }
+
     public Usuario() {
         this.ativo = true;
     }
 
     public Usuario(Long id, String nomeCompleto, String urlImagem, String email, String senha, LocalDate dataNascimento,
-            String genero, Integer alturaCm, BigDecimal pesoKg, String objetivoPrincipal, TipoUsuario tipoUsuario,
-            boolean ativo) {
+                   String genero, Integer alturaCm, BigDecimal pesoKg, String objetivoPrincipal, TipoUsuario tipoUsuario,
+                   boolean ativo) {
         this.id = id;
         this.nomeCompleto = nomeCompleto;
         this.urlImagem = urlImagem;
@@ -212,5 +236,13 @@ public class Usuario {
 
     public void setDataDesativacao(LocalDateTime dataDesativacao) {
         this.dataDesativacao = dataDesativacao;
+    }
+
+    public BigDecimal getImc() {
+        return imc;
+    }
+
+    public void setImc(BigDecimal imc) {
+        this.imc = imc;
     }
 }
