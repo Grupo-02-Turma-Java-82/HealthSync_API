@@ -35,6 +35,13 @@ public class Treinos {
 	@JsonIgnoreProperties("treino")
 	private List<TreinoExercicio> treinoExercicios;
 
+	@OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnoreProperties("treino")
+	private List<TreinoRegistro> treinoRegistros;
+
+	public Treinos() {
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -85,5 +92,13 @@ public class Treinos {
 
 	public void setConcluido(boolean concluido) {
 		this.concluido = concluido;
+	}
+
+	public List<TreinoRegistro> getTreinoRegistros() {
+		return treinoRegistros;
+	}
+
+	public void setTreinoRegistros(List<TreinoRegistro> treinoRegistros) {
+		this.treinoRegistros = treinoRegistros;
 	}
 }

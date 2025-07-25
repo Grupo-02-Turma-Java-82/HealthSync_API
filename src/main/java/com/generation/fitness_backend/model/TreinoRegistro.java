@@ -4,43 +4,49 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 
+
+@Entity
+@Table(name = "tb_treino_registro")
 public class TreinoRegistro {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToMany(mappedBy = "tb_exercicios")
-	@Column(name = "id_exercicio", nullable = false)
-	private Set<Exercicios> exercicio = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name = "id_treino", nullable = false)
+	@JsonIgnoreProperties("treinoRegistros")
+	private Treinos treino;
 
-	@ManyToMany(mappedBy = "tb_usuarios")
-	@Column(name = "id_usuario", nullable = false)
-	private Set<Usuario> usuario = new HashSet<>();
+	@ManyToOne
+	@JoinColumn(name = "id_usuario", nullable = false)
+	@JsonIgnoreProperties({"treinoRegistros", "exercicioRegistros", "pesos", "treinos", "atividadesRegistro", "listaAlunos"}) // Ajuste conforme as propriedades que causam loop em Usuario
+	private Usuario usuario;
 
 	@NotNull(message = "O nível de stress é obrigatória")
-	@Column(length = 100, nullable = false)
+	@Column(nullable = false)
 	private Integer nivelStress;
 
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false)
+	@NotNull(message = "A data de início do treino é obrigatória!")
+	@Column(nullable = false)
 	private LocalDateTime dataInicio;
 
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false)
+	@NotNull(message = "A data de término do treino é obrigatória!")
+	@Column(nullable = false)
 	private LocalDateTime dataTermino;
 
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime dataCriacao;
+
+	public TreinoRegistro() {
+	}
 
 	public Long getId() {
 		return id;
@@ -50,51 +56,43 @@ public class TreinoRegistro {
 		this.id = id;
 	}
 
-	public Set<Exercicios> getExercicio() {
-		return exercicio;
+	public Treinos getTreino() {
+		return treino;
 	}
 
-	public void setExercicio(Set<Exercicios> exercicio) {
-		this.exercicio = exercicio;
+	public void setTreino(Treinos treino) {
+		this.treino = treino;
 	}
 
-	public Set<Usuario> getUsuario() {
+	public Usuario getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(Set<Usuario> usuario) {
+	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
 
-	public LocalDateTime getDataCadastro() {
-		return dataCriacao;
-	}
-
-	public void setDataCadastro(LocalDateTime dataCadastro) {
-		this.dataCriacao = dataCadastro;
-	}
-
-	public Integer getNivelStress() {
+	public @NotNull(message = "O nível de stress é obrigatória") Integer getNivelStress() {
 		return nivelStress;
 	}
 
-	public void setNivelStress(Integer nivelStress) {
+	public void setNivelStress(@NotNull(message = "O nível de stress é obrigatória") Integer nivelStress) {
 		this.nivelStress = nivelStress;
 	}
 
-	public LocalDateTime getDataInicio() {
+	public @NotNull(message = "A data de início do treino é obrigatória!") LocalDateTime getDataInicio() {
 		return dataInicio;
 	}
 
-	public void setDataInicio(LocalDateTime dataInicio) {
+	public void setDataInicio(@NotNull(message = "A data de início do treino é obrigatória!") LocalDateTime dataInicio) {
 		this.dataInicio = dataInicio;
 	}
 
-	public LocalDateTime getDataTermino() {
+	public @NotNull(message = "A data de término do treino é obrigatória!") LocalDateTime getDataTermino() {
 		return dataTermino;
 	}
 
-	public void setDataTermino(LocalDateTime dataTermino) {
+	public void setDataTermino(@NotNull(message = "A data de término do treino é obrigatória!") LocalDateTime dataTermino) {
 		this.dataTermino = dataTermino;
 	}
 
@@ -105,5 +103,4 @@ public class TreinoRegistro {
 	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
-
 }

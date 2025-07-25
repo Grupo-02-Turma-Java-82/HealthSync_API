@@ -34,29 +34,18 @@ public class TreinadorController {
   @Autowired
   private TreinadorService treinadorService;
 
-  @Autowired
-  private UsuarioRepository usuarioRepository;
-
-  @Autowired
-  private ListaAlunoRepository listaAlunoRepository;
-
   @Operation(summary = "Treinador cadastra um novo aluno", description = "Cria um novo usuário do tipo ALUNO e o vincula automaticamente ao treinador que está logado.")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "201", description = "Aluno cadastrado e vinculado com sucesso"),
       @ApiResponse(responseCode = "400", description = "Requisição inválida - O email do aluno já existe."),
       @ApiResponse(responseCode = "403", description = "Acesso Proibido")
   })
+
   @PostMapping("/alunos")
   public ResponseEntity<Usuario> cadastrarAluno(@Valid @RequestBody Usuario novoAluno, Authentication authentication) {
-
     String emailTreinador = authentication.getName();
-    Usuario treinador = usuarioRepository.findByEmail(emailTreinador)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Treinador não encontrado."));
 
-    return treinadorService.cadastrarAlunoParaTreinador(novoAluno, treinador)
-        .map(aluno -> ResponseEntity.status(HttpStatus.CREATED).body(aluno))
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-            "O email informado para o aluno já está em uso."));
+    return ResponseEntity.status(HttpStatus.CREATED).body(treinadorService.cadastrarAlunoParaTreinador(novoAluno, emailTreinador));
   }
 
   @Operation(summary = "Lista os alunos do treinador logado", description = "Retorna a lista de todos os alunos vinculados ao treinador que está fazendo a requisição.")
@@ -69,9 +58,6 @@ public class TreinadorController {
   public ResponseEntity<List<ListaAluno>> getMeusAlunos(Authentication authentication) {
 
     String emailTreinador = authentication.getName();
-    Usuario treinador = usuarioRepository.findByEmail(emailTreinador)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Treinador não encontrado."));
-
-    return ResponseEntity.ok(listaAlunoRepository.findByTreinadorId(treinador.getId()));
+    return ResponseEntity.ok(treinadorService.getAlunosDoTreinador(emailTreinador));
   }
 }

@@ -36,6 +36,7 @@ public class TreinosService {
         return treinosRepository.findByNomeContainingIgnoreCase(nome);
     }
 
+    @Transactional
     public Treinos createTreino(Treinos treino) {
 
         if (treino.getUsuario() == null || treino.getUsuario().getId() == null) {
@@ -43,58 +44,39 @@ public class TreinosService {
                     "ID do usuário é obrigatório para criar um treino!");
         }
 
-        Optional<Usuario> usuarioExistente = usuarioRepository.findById(treino.getUsuario().getId());
-        if (usuarioExistente.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado para associar ao treino!");
-        }
+        Usuario usuarioExistente = usuarioRepository.findById(treino.getUsuario().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado para associar ao treino!"));
 
-        treino.setUsuario(usuarioExistente.get());
+        treino.setUsuario(usuarioExistente);
+        treino.setConcluido(false);
 
         return treinosRepository.save(treino);
     }
 
-    public Optional<Treinos> updateTreino(Treinos treino) {
+    @Transactional
+    public Treinos updateTreino(Treinos treino) {
 
-        return treinosRepository.findById(treino.getId())
-                .map(treinoExistente -> {
+        Treinos treinoExistente = treinosRepository.findById(treino.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Treino não encontrado para atualização!"));
 
-                    if (treino.getId() == null || !treinosRepository.existsById(treino.getId())) {
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Treino não encontrado para atualização!");
-                    }
+        if (treino.getUsuario() != null && treino.getUsuario().getId() != null) {
+            Usuario novoUsuario = usuarioRepository.findById(treino.getUsuario().getId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Novo usuário para associação do treino não encontrado com ID: " + treino.getUsuario().getId()));
+            treinoExistente.setUsuario(novoUsuario);
+        }
 
-                    if (treino.getUsuario() != null && treino.getUsuario().getId() != null) {
-                        Optional<Usuario> usuarioExistente = usuarioRepository.findById(treino.getUsuario().getId());
-                        if (usuarioExistente.isEmpty()) {
-                            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                    "Novo usuário para associação do treino não encontrado!");
-                        }
-                        treino.setUsuario(usuarioExistente.get());
-                    } else {
-                        treino.setUsuario(treinosRepository.findById(treino.getId()).get().getUsuario());
-                    }
+        if (treino.getNome() != null) {
+            treinoExistente.setNome(treino.getNome());
+        }
+        if (treino.getDescricao() != null) {
+            treinoExistente.setDescricao(treino.getDescricao());
+        }
 
-                    if (treino.getUsuario() != null && treino.getUsuario().getId() != null) {
-                        usuarioRepository.findById(treino.getUsuario().getId())
-                                .ifPresentOrElse(treinoExistente::setUsuario,
-                                        () -> {
-                                            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                    "Novo usuário para associação do treino não encontrado com ID: "
-                                                            + treino.getUsuario().getId());
-                                        });
-
-                    }
-                    if (treino.getNome() != null) {
-                        treinoExistente.setNome(treino.getNome());
-                    }
-                    if (treino.getDescricao() != null) {
-                        treinoExistente.setDescricao(treino.getDescricao());
-                    }
-                    return Optional.of(treinosRepository.save(treinoExistente));
-                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Treino não encontrado para atualização com ID: " + treino.getId()));
+        return treinosRepository.save(treinoExistente);
     }
 
+    @Transactional
     public void deleteTreino(Long id) {
         if (!treinosRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Treino não encontrado para exclusão!");

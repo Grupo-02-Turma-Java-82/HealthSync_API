@@ -46,9 +46,7 @@ public class TreinosController {
 
     @PutMapping
     public ResponseEntity<Treinos> put(@Valid @RequestBody Treinos treino) {
-        return treinosService.updateTreino(treino)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+        return ResponseEntity.status(HttpStatus.OK).body(treinosService.updateTreino(treino));
     }
 
     @DeleteMapping("/{id}")
