@@ -85,10 +85,9 @@ public class ExerciciosController {
 	public ResponseEntity<Exercicios> put(@Valid @RequestBody Exercicios exercicio) {
 
 		if (exercicio.getId() == null) {
-			return ResponseEntity.badRequest().build(); // ID é obrigatório para PUT
+			return ResponseEntity.badRequest().build();
 		}
 
-		// Melhoria: Retornar 404 se o exercício não existir
 		if (!exerciciosRepository.existsById(exercicio.getId())) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado para atualização!");
 		}
@@ -97,7 +96,7 @@ public class ExerciciosController {
 	}
 
 	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT) // Para indicar que a operação foi bem-sucedida sem conteúdo de retorno
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Operation(summary = "Deleta um exercício por ID", description = "Remove um exercício do sistema com base no ID fornecido.")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "204", description = "Exercício deletado com sucesso."),

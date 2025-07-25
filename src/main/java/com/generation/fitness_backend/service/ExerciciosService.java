@@ -45,7 +45,7 @@ public class ExerciciosService {
 		Optional<Exercicios> exercicio = exerciciosRepository.findById(id);
 
 		if (exercicio.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado!");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado!");
 		}
 
 		exerciciosRepository.deleteById(id);

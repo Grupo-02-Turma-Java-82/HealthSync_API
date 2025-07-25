@@ -28,8 +28,6 @@ public class Categoria {
 	@JsonIgnoreProperties("categoria")
 	private List<Exercicios> exercicios;
 
-	// Getters e Setters
-
 	public Long getId() {
 		return id;
 	}

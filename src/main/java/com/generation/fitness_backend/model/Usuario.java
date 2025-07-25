@@ -1,9 +1,13 @@
 package com.generation.fitness_backend.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.generation.fitness_backend.enums.TipoUsuario;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
@@ -14,7 +18,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,168 +27,220 @@ import jakarta.validation.constraints.Size;
 @Table(name = "tb_usuarios")
 public class Usuario {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotBlank(message = "O atributo Nome Completo é obrigatório!")
-	@Column(nullable = false, length = 255)
-	private String nomeCompleto;
+    @NotBlank(message = "O atributo Nome Completo é obrigatório!")
+    @Column(nullable = false, length = 255)
+    private String nomeCompleto;
 
-	@NotNull(message = "O atributo Email é obrigatório!")
-	@Email(message = "O atributo Email deve ser válido!")
-	@Column(length = 100, nullable = false, unique = true)
-	private String email;
+    @Column(length = 100, nullable = false)
+    @Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.")
+    private String urlImagem;
 
-	@NotBlank(message = "O atributo Senha é obrigatório!")
-	@Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres")
-	@Column(length = 100, nullable = false)
-	private String senha;
+    @NotNull(message = "O atributo Email é obrigatório!")
+    @Email(message = "O atributo Email deve ser válido!")
+    @Column(length = 100, nullable = false, unique = true)
+    private String email;
 
-	@NotNull(message = "A data de nascimento é obrigatória")
-	@Column(length = 100, nullable = false)
-	private LocalDate dataNascimento;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "O atributo Senha é obrigatório!")
+    @Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres")
+    @Column(length = 100, nullable = false)
+    private String senha;
 
-	@Column(length = 100, nullable = false)
-	private String genero;
+    @NotNull(message = "A data de nascimento é obrigatória")
+    private LocalDate dataNascimento;
 
-	@NotNull(message = "A altura é obrigatória")
-	@Column(length = 100, nullable = false)
-	private Integer alturaCm;
+    @NotBlank(message = "O Gênero é obrigatório")
+    @Column(length = 100, nullable = false)
+    private String genero;
 
-	@NotNull(message = "O peso é obrigatório")
-	@Column(length = 100, nullable = false)
-	private BigDecimal pesoKg;
-	
-    @Transient // Indica que este campo não será persistido no banco de dados
-    private Double imc;
+    @Column(length = 100)
+    private Integer alturaCm;
 
-	@Column(length = 255, nullable = false)
-	private String objetivoPrincipal;
-	
-	@Enumerated(EnumType.STRING)
-	@NotNull(message = "O tipo do usuario é obrigatorio")
-	@Column(name = "tipo", nullable = false, length = 50)
-	private TipoUsuario tipoUsuario;
+    @Column(length = 100)
+    private BigDecimal pesoKg;
 
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false)
-	private LocalDateTime dataCadastro;
-	
-	@CreationTimestamp
-	@Column(nullable = true, updatable = false)
-	private LocalDateTime dataRemocao;
+    @Column(length = 255)
+    private String objetivoPrincipal;
 
-	public Long getId() {
-		return id;
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo", nullable = false, length = 50)
+    private TipoUsuario tipoUsuario;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Column(nullable = false)
+    private boolean ativo = true;
 
-	public String getNomeCompleto() {
-		return nomeCompleto;
-	}
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dataCadastro;
 
-	public void setNomeCompleto(String nomeCompleto) {
-		this.nomeCompleto = nomeCompleto;
-	}
+    @Column(nullable = true)
+    private LocalDateTime dataDesativacao;
 
-	public String getEmail() {
-		return email;
-	}
+    @Transient
+    private BigDecimal imc;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    //imc
+    @PostLoad
+    @PrePersist
+    @PreUpdate
+    private void calculateImc() {
 
-	public String getSenha() {
-		return senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
-
-	public LocalDate getDataNascimento() {
-		return dataNascimento;
-	}
-
-	public void setDataNascimento(LocalDate dataNascimento) {
-		this.dataNascimento = dataNascimento;
-	}
-
-	public String getGenero() {
-		return genero;
-	}
-
-	public void setGenero(String genero) {
-		this.genero = genero;
-	}
-
-	public Integer getAlturaCm() {
-		return alturaCm;
-	}
-
-	public void setAlturaCm(Integer alturaCm) {
-		this.alturaCm = alturaCm;
-	}
-
-	public BigDecimal getPesoKg() {
-		return pesoKg;
-	}
-
-	public void setPesoKg(BigDecimal pesoKg) {
-		this.pesoKg = pesoKg;
-	}
-	
-    // Getter para o IMC (calculado dinamicamente)
-    public Double getImc() {
         if (this.pesoKg != null && this.alturaCm != null && this.alturaCm > 0) {
-        	
-        	Double alturaCalc = (double) (this.alturaCm * this.alturaCm);
-            return (this.pesoKg.doubleValue() / (alturaCalc)) * 10000;
+            BigDecimal alturaMetros = BigDecimal.valueOf(this.alturaCm)
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+            if (alturaMetros.compareTo(BigDecimal.ZERO) > 0) {
+                this.imc = this.pesoKg.divide(alturaMetros.multiply(alturaMetros), 2, RoundingMode.HALF_UP);
+            } else {
+                this.imc = null;
+            }
+        } else {
+            this.imc = null;
         }
-
-        return null;
     }
 
-    // O setter para o IMC não é necessário, pois ele é calculado
-    // Mas se você quiser ter um (por exemplo, para DTOs que o aceitem), pode adicionar
-    public void setImc(Double imc) {
+    public Usuario() {
+        this.ativo = true;
+    }
+
+    public Usuario(Long id, String nomeCompleto, String urlImagem, String email, String senha, LocalDate dataNascimento,
+                   String genero, Integer alturaCm, BigDecimal pesoKg, String objetivoPrincipal, TipoUsuario tipoUsuario,
+                   boolean ativo) {
+        this.id = id;
+        this.nomeCompleto = nomeCompleto;
+        this.urlImagem = urlImagem;
+        this.email = email;
+        this.senha = senha;
+        this.dataNascimento = dataNascimento;
+        this.genero = genero;
+        this.alturaCm = alturaCm;
+        this.pesoKg = pesoKg;
+        this.objetivoPrincipal = objetivoPrincipal;
+        this.tipoUsuario = tipoUsuario;
+        this.ativo = ativo;
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
+
+    public void setNomeCompleto(String nomeCompleto) {
+        this.nomeCompleto = nomeCompleto;
+    }
+
+    public String getUrlImagem() {
+        return urlImagem;
+    }
+
+    public void setUrlImagem(String urlImagem) {
+        this.urlImagem = urlImagem;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public void setGenero(String genero) {
+        this.genero = genero;
+    }
+
+    public Integer getAlturaCm() {
+        return alturaCm;
+    }
+
+    public void setAlturaCm(Integer alturaCm) {
+        this.alturaCm = alturaCm;
+    }
+
+    public BigDecimal getPesoKg() {
+        return pesoKg;
+    }
+
+    public void setPesoKg(BigDecimal pesoKg) {
+        this.pesoKg = pesoKg;
+    }
+
+    public String getObjetivoPrincipal() {
+        return objetivoPrincipal;
+    }
+
+    public void setObjetivoPrincipal(String objetivoPrincipal) {
+        this.objetivoPrincipal = objetivoPrincipal;
+    }
+
+    public TipoUsuario getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(LocalDateTime dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
+    public LocalDateTime getDataDesativacao() {
+        return dataDesativacao;
+    }
+
+    public void setDataDesativacao(LocalDateTime dataDesativacao) {
+        this.dataDesativacao = dataDesativacao;
+    }
+
+    public BigDecimal getImc() {
+        return imc;
+    }
+
+    public void setImc(BigDecimal imc) {
         this.imc = imc;
     }
-
-	public String getObjetivoPrincipal() {
-		return objetivoPrincipal;
-	}
-
-	public void setObjetivoPrincipal(String objetivoPrincipal) {
-		this.objetivoPrincipal = objetivoPrincipal;
-	}
-	
-	public TipoUsuario getTipoUsuario() {
-		return tipoUsuario;
-	}
-
-	public void setTipoUsuario(TipoUsuario tipoUsuario) {
-		this.tipoUsuario = tipoUsuario;
-	}
-
-	public LocalDateTime getDataCadastro() {
-		return dataCadastro;
-	}
-
-	public void setDataCadastro(LocalDateTime dataCadastro) {
-		this.dataCadastro = dataCadastro;
-	}
-
-	public LocalDateTime getDataRemocao() {
-		return dataRemocao;
-	}
-
-	public void setDataRemocao(LocalDateTime dataRemocao) {
-		this.dataRemocao = dataRemocao;
-	}
 }

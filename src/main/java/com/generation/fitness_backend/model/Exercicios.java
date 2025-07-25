@@ -1,18 +1,12 @@
 package com.generation.fitness_backend.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.generation.fitness_backend.enums.DificuldadeExercicio;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -56,6 +50,10 @@ public class Exercicios {
 	@JsonIgnoreProperties("exercicios")
 	private Categoria categoria;
 
+	@OneToMany(mappedBy = "exercicio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnoreProperties("exercicio")
+	private List<TreinoExercicio> treinoExercicios;
+
 	public Exercicios() {
 		this.dataCriacao = LocalDate.now();
 	}
@@ -76,35 +74,35 @@ public class Exercicios {
 		this.nome = nome;
 	}
 
-	public String getDescricao_detalhada() {
+	public String getDescricaoDetalhada() {
 		return descricaoDetalhada;
 	}
 
-	public void setDescricao_detalhada(String descricaoDetalhada) {
+	public void setDescricaoDetalhada(String descricaoDetalhada) {
 		this.descricaoDetalhada = descricaoDetalhada;
 	}
 
-	public DificuldadeExercicio getNivel_dificuldade() {
+	public DificuldadeExercicio getNivelDificuldade() {
 		return nivelDificuldade;
 	}
 
-	public void setNivel_dificuldade(DificuldadeExercicio nivelDificuldade) {
+	public void setNivelDificuldade(DificuldadeExercicio nivelDificuldade) {
 		this.nivelDificuldade = nivelDificuldade;
 	}
 
-	public String getUrl_video_demonstrativo() {
+	public String getUrlVideoDemonstrativo() {
 		return urlVideoDemonstrativo;
 	}
 
-	public void setUrl_video_demonstrativo(String urlVideoDemonstrativo) {
+	public void setUrlVideoDemonstrativo(String urlVideoDemonstrativo) {
 		this.urlVideoDemonstrativo = urlVideoDemonstrativo;
 	}
 
-	public String getEquipamento_necessario() {
+	public String getEquipamentoNecessario() {
 		return equipamentoNecessario;
 	}
 
-	public void setEquipamento_necessario(String equipamentoNecessario) {
+	public void setEquipamentoNecessario(String equipamentoNecessario) {
 		this.equipamentoNecessario = equipamentoNecessario;
 	}
 
@@ -124,4 +122,11 @@ public class Exercicios {
 		this.categoria = categoria;
 	}
 
+	public List<TreinoExercicio> getTreinoExercicios() {
+		return treinoExercicios;
+	}
+
+	public void setTreinoExercicios(List<TreinoExercicio> treinoExercicios) {
+		this.treinoExercicios = treinoExercicios;
+	}
 }
