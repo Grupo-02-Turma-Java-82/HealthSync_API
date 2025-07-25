@@ -48,12 +48,18 @@ public class TreinosController {
     public ResponseEntity<Treinos> put(@Valid @RequestBody Treinos treino) {
         return treinosService.updateTreino(treino)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build()); // O serviço já lança NOT_FOUND
+                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         treinosService.deleteTreino(id);
+    }
+
+    @PatchMapping("/{id}/concluido")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarConcluido(@PathVariable Long id) {
+        treinosService.completeWorkout(id);
     }
 }

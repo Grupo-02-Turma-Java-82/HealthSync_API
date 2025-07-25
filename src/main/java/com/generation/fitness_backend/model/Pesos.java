@@ -17,9 +17,9 @@ import jakarta.validation.constraints.NotNull;
 public class Pesos {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull(message = "O peso é obrigatório")
 	@Column(length = 100, nullable = false)
 	private BigDecimal pesoKg;
@@ -30,7 +30,7 @@ public class Pesos {
 
 	@ManyToOne
 	@JoinColumn(name = "id_usuario", nullable = false)
-	@JsonIgnoreProperties({"pesos", "dataCadastro", "dataDesativacao"})
+	@JsonIgnoreProperties({ "pesos", "dataCadastro", "dataDesativacao" })
 	private Usuario usuario;
 
 	public Long getId() {
@@ -48,7 +48,7 @@ public class Pesos {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
+
 	public BigDecimal getPesoKg() {
 		return pesoKg;
 	}

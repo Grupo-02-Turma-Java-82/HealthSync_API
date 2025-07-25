@@ -16,16 +16,16 @@ import jakarta.validation.constraints.NotNull;
 
 public class ExercicioRegistro {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-    @ManyToMany(mappedBy = "tb_exercicios")
-	@Column(name = "id_exercicio", nullable = false)
-    private Set<Exercicios> exercicio = new HashSet<>();
 
-    @ManyToMany(mappedBy = "tb_usuarios")
- 	@Column(name = "id_usuario", nullable = false)
-    private Set<Usuario> usuario = new HashSet<>();
+	@ManyToMany(mappedBy = "tb_exercicios")
+	@Column(name = "id_exercicio", nullable = false)
+	private Set<Exercicios> exercicio = new HashSet<>();
+
+	@ManyToMany(mappedBy = "tb_usuarios")
+	@Column(name = "id_usuario", nullable = false)
+	private Set<Usuario> usuario = new HashSet<>();
 
 	@NotNull(message = "A a duração dos exercicos é obrigatória")
 	@Column(length = 100, nullable = false)

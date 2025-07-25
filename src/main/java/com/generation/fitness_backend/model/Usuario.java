@@ -122,7 +122,7 @@ public class Usuario {
         this.pesoKg = pesoKg;
         this.objetivoPrincipal = objetivoPrincipal;
         this.tipoUsuario = tipoUsuario;
-        this.ativo = ativo; // inicializa
+        this.ativo = ativo;
 
     }
 

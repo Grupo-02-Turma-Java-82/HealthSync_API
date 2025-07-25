@@ -13,7 +13,7 @@ import jakarta.persistence.*;
 public class ListaAluno {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // de integer para long
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne
