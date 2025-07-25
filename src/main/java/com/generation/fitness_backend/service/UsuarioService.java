@@ -49,6 +49,16 @@ public class UsuarioService {
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
             return Optional.empty();
         }
+
+        if (usuario.getTipoUsuario() == TipoUsuario.ALUNO) {
+            if (usuario.getAlturaCm() == null || usuario.getPesoKg() == null ||
+                    usuario.getObjetivoPrincipal() == null || usuario.getObjetivoPrincipal().isBlank()) {
+
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Para o tipo ALUNO, os campos altura, peso e objetivo principal são obrigatórios.");
+            }
+        }
+
         usuario.setSenha(criptografarSenha(usuario.getSenha()));
 
         if (usuario.getTipoUsuario() == null) {

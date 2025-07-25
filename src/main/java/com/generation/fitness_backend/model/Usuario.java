@@ -49,21 +49,19 @@ public class Usuario {
     private String senha;
 
     @NotNull(message = "A data de nascimento é obrigatória")
-    @Column(length = 100, nullable = false)
     private LocalDate dataNascimento;
 
+    @NotBlank(message = "O Gênero é obrigatório")
     @Column(length = 100, nullable = false)
     private String genero;
 
-    @NotNull(message = "A altura é obrigatória")
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private Integer alturaCm;
 
-    @NotNull(message = "O peso é obrigatório")
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private BigDecimal pesoKg;
 
-    @Column(length = 255, nullable = false)
+    @Column(length = 255)
     private String objetivoPrincipal;
 
     @Enumerated(EnumType.STRING)
