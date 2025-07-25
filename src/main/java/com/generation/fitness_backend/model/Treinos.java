@@ -23,6 +23,9 @@ public class Treinos {
 	@Size(max = 500)
 	private String descricao;
 
+	@Column(nullable = false)
+	private boolean concluido = false;
+
 	@ManyToOne
 	@JoinColumn(name = "id_usuario", nullable = false)
 	@JsonIgnoreProperties({ "treinos", "dataCadastro", "dataDesativacao" })
@@ -70,5 +73,17 @@ public class Treinos {
 
 	public void setTreinoExercicios(List<TreinoExercicio> treinoExercicios) {
 		this.treinoExercicios = treinoExercicios;
+	}
+
+	public boolean isConcluido() {
+		return this.concluido;
+	}
+
+	public boolean getConcluido() {
+		return this.concluido;
+	}
+
+	public void setConcluido(boolean concluido) {
+		this.concluido = concluido;
 	}
 }

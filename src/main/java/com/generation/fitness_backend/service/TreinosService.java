@@ -4,6 +4,9 @@ import com.generation.fitness_backend.model.Treinos;
 import com.generation.fitness_backend.model.Usuario;
 import com.generation.fitness_backend.repository.TreinosRepository;
 import com.generation.fitness_backend.repository.UsuarioRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -73,5 +76,15 @@ public class TreinosService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Treino não encontrado para exclusão!");
         }
         treinosRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void completeWorkout(Long id) {
+        Treinos treino = treinosRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Treino não encontrado!"));
+
+        treino.setConcluido(!treino.isConcluido());
+
+        treinosRepository.save(treino);
     }
 }

@@ -56,4 +56,10 @@ public class TreinosController {
     public void delete(@PathVariable Long id) {
         treinosService.deleteTreino(id);
     }
+
+    @PatchMapping("/{id}/concluido")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarConcluido(@PathVariable Long id) {
+        treinosService.completeWorkout(id);
+    }
 }
