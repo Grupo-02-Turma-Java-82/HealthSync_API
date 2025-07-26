@@ -14,107 +14,117 @@ import java.util.List;
 @Table(name = "tb_treinos")
 public class Treinos {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotBlank(message = "O atributo Nome é obrigatório!")
-	@Column(nullable = false, length = 255)
-	private String nome;
+    @NotBlank(message = "O atributo Nome é obrigatório!")
+    @Column(nullable = false, length = 255)
+    private String nome;
 
-	@Size(max = 500)
-	private String descricao;
+    @Size(max = 500)
+    private String descricao;
 
-	@Column(nullable = false)
-	private boolean concluido = false;
+    @Column(nullable = false)
+    private boolean concluido = false;
 
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false)
-	private LocalDateTime dataCriacao;
+    @Column(nullable = true)
+    private LocalDateTime dataUltimaConclusao;
 
-	@ManyToOne
-	@JoinColumn(name = "id_usuario", nullable = false)
-	@JsonIgnoreProperties({ "treinos", "dataCadastro", "dataDesativacao" })
-	private Usuario usuario;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dataCriacao;
 
-	@OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonIgnoreProperties("treino")
-	private List<TreinoExercicio> treinoExercicios;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    @JsonIgnoreProperties({"treinos", "dataCadastro", "dataDesativacao"})
+    private Usuario usuario;
 
-	@OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonIgnoreProperties("treino")
-	private List<TreinoRegistro> treinoRegistros;
+    @OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("treino")
+    private List<TreinoExercicio> treinoExercicios;
 
-	public Treinos() {
-	}
+    @OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("treino")
+    private List<TreinoRegistro> treinoRegistros;
 
-	public Long getId() {
-		return id;
-	}
+    public Treinos() {
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getNome() {
-		return nome;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    public String getNome() {
+        return nome;
+    }
 
-	public String getDescricao() {
-		return descricao;
-	}
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
+    public String getDescricao() {
+        return descricao;
+    }
 
-	public Usuario getUsuario() {
-		return usuario;
-	}
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
+    public Usuario getUsuario() {
+        return usuario;
+    }
 
-	public List<TreinoExercicio> getTreinoExercicios() {
-		return treinoExercicios;
-	}
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
-	public void setTreinoExercicios(List<TreinoExercicio> treinoExercicios) {
-		this.treinoExercicios = treinoExercicios;
-	}
+    public List<TreinoExercicio> getTreinoExercicios() {
+        return treinoExercicios;
+    }
 
-	public boolean isConcluido() {
-		return this.concluido;
-	}
+    public void setTreinoExercicios(List<TreinoExercicio> treinoExercicios) {
+        this.treinoExercicios = treinoExercicios;
+    }
 
-	public boolean getConcluido() {
-		return this.concluido;
-	}
+    public boolean isConcluido() {
+        return this.concluido;
+    }
 
-	public void setConcluido(boolean concluido) {
-		this.concluido = concluido;
-	}
+    public boolean getConcluido() {
+        return this.concluido;
+    }
 
-	public List<TreinoRegistro> getTreinoRegistros() {
-		return treinoRegistros;
-	}
+    public void setConcluido(boolean concluido) {
+        this.concluido = concluido;
+    }
 
-	public void setTreinoRegistros(List<TreinoRegistro> treinoRegistros) {
-		this.treinoRegistros = treinoRegistros;
-	}
+    public List<TreinoRegistro> getTreinoRegistros() {
+        return treinoRegistros;
+    }
 
-	public LocalDateTime getDataCriacao() {
-		return dataCriacao;
-	}
+    public void setTreinoRegistros(List<TreinoRegistro> treinoRegistros) {
+        this.treinoRegistros = treinoRegistros;
+    }
 
-	public void setDataCriacao(LocalDateTime dataCriacao) {
-		this.dataCriacao = dataCriacao;
-	}
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
 
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public LocalDateTime getDataUltimaConclusao() {
+        return dataUltimaConclusao;
+    }
+
+    public void setDataUltimaConclusao(LocalDateTime dataUltimaConclusao) {
+        this.dataUltimaConclusao = dataUltimaConclusao;
+    }
 }
 

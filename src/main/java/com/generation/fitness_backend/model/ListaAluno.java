@@ -26,7 +26,6 @@ public class ListaAluno {
             "treinos",
             "exercicioRegistros",
             "treinoRegistros",
-            "email",
             "senha"
     })
     private Usuario aluno;
@@ -40,7 +39,6 @@ public class ListaAluno {
             "treinos",
             "exercicioRegistros",
             "treinoRegistros",
-            "email",
             "senha"
     })
     private Usuario treinador;
@@ -48,7 +46,6 @@ public class ListaAluno {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataVinculo;
-
 
     public Usuario getAluno() {
         return aluno;
