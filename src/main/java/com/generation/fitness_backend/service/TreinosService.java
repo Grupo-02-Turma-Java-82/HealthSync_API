@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +50,10 @@ public class TreinosService {
 
         treino.setUsuario(usuarioExistente);
         treino.setConcluido(false);
+
+        //alt
+        treino.setConcluido(false);
+        treino.setDataUltimaConclusao(null);
 
         return treinosRepository.save(treino);
     }
@@ -88,10 +93,18 @@ public class TreinosService {
     public void completeWorkout(Long id) {
         Treinos treino = treinosRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Treino não encontrado!"));
+        //inverte
+        boolean novoStatusConclusao = !treino.isConcluido();
+        treino.setConcluido(novoStatusConclusao);
 
-        treino.setConcluido(!treino.isConcluido());
+        if (novoStatusConclusao) {
+            treino.setDataUltimaConclusao(LocalDateTime.now());
+        } else {
+            treino.setDataUltimaConclusao(null);
+        }
 
         treinosRepository.save(treino);
+
     }
 
 }

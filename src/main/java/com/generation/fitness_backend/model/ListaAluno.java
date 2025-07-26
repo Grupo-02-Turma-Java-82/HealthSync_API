@@ -47,7 +47,6 @@ public class ListaAluno {
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataVinculo;
 
-
     public Usuario getAluno() {
         return aluno;
     }
