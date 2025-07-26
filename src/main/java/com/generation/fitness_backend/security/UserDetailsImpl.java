@@ -1,69 +1,65 @@
 package com.generation.fitness_backend.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.generation.fitness_backend.model.Usuario;
 
-public class UserDetailsImpl implements UserDetails { //MAPEAR EMAIL DO USUARIO PRA USERNAME""
+public class UserDetailsImpl implements UserDetails {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String username; // representa email do usuario
-	private String password;
-	private List<GrantedAuthority> authorities;
+    private String username;
+    private String password;
+    private List<GrantedAuthority> authorities;
 
-	public UserDetailsImpl(Usuario user) {	//identificador unico
-		
-		//qd eu te der o user, vc pega o email
-		this.username = user.getEmail(); // this username = chamar o email ((username))......!!
-		this.password = user.getSenha();
+    public UserDetailsImpl(Usuario user) {
+        this.username = user.getEmail();
+        this.password = user.getSenha();
+        this.authorities = new ArrayList<>();
+        this.authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getTipoUsuario().name()));
+    }
 
-	}
+    public UserDetailsImpl() {
+    }
 
-	public UserDetailsImpl() {
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
-		return null;
-	}
+    @Override
+    public String getUsername() {
+        return username;
+    }
 
-	@Override
-	public String getPassword() {
-		return password;
-	}
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-	@Override
-	public String getUsername() { 
-		return username;
-	}
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-	@Override
-	public boolean isAccountNonExpired() {
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-
-		return true;
-	}
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

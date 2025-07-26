@@ -1,4 +1,4 @@
-package com.generation.fitness_backend.model;
+package com.generation.fitness_backend.enums;
 
 public enum DificuldadeExercicio {
     INICIANTE,

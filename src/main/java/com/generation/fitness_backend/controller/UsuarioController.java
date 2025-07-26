@@ -80,15 +80,10 @@ public class UsuarioController {
 			@ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
 			@ApiResponse(responseCode = "400", description = "Requisição inválida - Email já cadastrado ou dados inválidos")
 	})
+
 	@PostMapping("/cadastrar")
 	public ResponseEntity<Usuario> post(@Valid @RequestBody Usuario usuario) {
-		Optional<Usuario> novoUsuario = usuarioService.cadastrarUsuario(usuario);
-
-		if (novoUsuario.isPresent()) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario.get());
-		} else {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este email já foi cadastrado!");
-		}
+		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.cadastrarUsuario(usuario));
 	}
 
 	@Operation(summary = "Atualizar usuário existente", description = "Atualiza os dados de um usuário existente.")
@@ -105,15 +100,7 @@ public class UsuarioController {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 					"O ID do usuário é obrigatório para a atualização...");
 		}
-
-		Optional<Usuario> usuarioAtualizado = usuarioService.atualizarUsuario(usuario);
-
-		if (usuarioAtualizado.isPresent()) {
-			return ResponseEntity.ok(usuarioAtualizado.get());
-		} else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-					"O Usuário não foi encontrado para a atualização...");
-		}
+		return ResponseEntity.ok(usuarioService.atualizarUsuario(usuario));
 	}
 
 	@Operation(summary = "Autenticar usuário (Login)", description = "Autentica um usuário e retorna um token JWT se as credenciais forem válidas.")
@@ -122,13 +109,7 @@ public class UsuarioController {
 			@ApiResponse(responseCode = "401", description = "Não autorizado - Usuário ou senha inválidos")
 	})
 	@PostMapping("/logar")
-	public ResponseEntity<UsuarioLogin> logar(@RequestBody Optional<UsuarioLogin> usuarioLogin) {
-		Optional<UsuarioLogin> usuarioAutenticado = usuarioService.autenticarUsuario(usuarioLogin);
-
-		if (usuarioAutenticado.isPresent()) {
-			return ResponseEntity.ok(usuarioAutenticado.get());
-		} else {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!");
-		}
+	public ResponseEntity<UsuarioLogin> logar(@Valid @RequestBody UsuarioLogin usuarioLogin) {
+		return ResponseEntity.ok(usuarioService.autenticarUsuario(usuarioLogin).get());
 	}
 }
