@@ -30,49 +30,47 @@ import org.springframework.web.server.ResponseStatusException;
 @Tag(name = "Categorias", description = "Gerencia as categorias de produtos ou serviços na plataforma de fitness")
 public class CategoriaController {
 
-	@Autowired
-	private CategoriaService categoriaService;
+    @Autowired
+    private CategoriaService categoriaService;
 
-	@GetMapping
-	@SecurityRequirement(name = "jwt_auth")
-	public ResponseEntity<List<Categoria>> getAll() {
-		return ResponseEntity.ok(categoriaService.listarTodas());
-	}
+    @GetMapping
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<List<Categoria>> getAll() {
+        return ResponseEntity.ok(categoriaService.listarTodas());
+    }
 
-	@GetMapping("/{id}")
-	@SecurityRequirement(name = "jwt_auth")
-	public ResponseEntity<Categoria> getById(@PathVariable Long id) {
-		return categoriaService.buscarPorId(id)
-				.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-	}
+    @GetMapping("/{id}")
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<Categoria> getById(@PathVariable Long id) {
+        return categoriaService.buscarPorId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
 
-	@GetMapping("/nome/{nome}")
-	@SecurityRequirement(name = "jwt_auth")
-	public ResponseEntity<List<Categoria>> getByNome(@PathVariable String nome) {
-		return ResponseEntity.ok(categoriaService.buscarPorNome(nome));
-	}
+    @GetMapping("/nome/{nome}")
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<List<Categoria>> getByNome(@PathVariable String nome) {
+        return ResponseEntity.ok(categoriaService.buscarPorNome(nome));
+    }
 
-	@PostMapping
-	@SecurityRequirement(name = "jwt_auth")
-	public ResponseEntity<Categoria> post(@Valid @RequestBody Categoria categoria) {
+    @PostMapping
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<Categoria> post(@Valid @RequestBody Categoria categoria) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.criarCategoria(categoria));
-	}
+    }
 
-	@PutMapping
-	@SecurityRequirement(name = "jwt_auth")
-	public ResponseEntity<Categoria> put(@Valid @RequestBody Categoria categoria) {
-		return categoriaService.atualizarCategoria(categoria)
-				.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-	}
+    @PutMapping
+    @SecurityRequirement(name = "jwt_auth")
+    public ResponseEntity<Categoria> put(@Valid @RequestBody Categoria categoria) {
+        return ResponseEntity.ok(categoriaService.atualizarCategoria(categoria));
 
-	@DeleteMapping("/{id}")
-	@SecurityRequirement(name = "jwt_auth")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Long id) {
-		boolean apagado = categoriaService.deletarCategoria(id);
-		if (!apagado)
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-	}
+    }
+
+    @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "jwt_auth")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        categoriaService.deletarCategoria(id);
+
+    }
 }

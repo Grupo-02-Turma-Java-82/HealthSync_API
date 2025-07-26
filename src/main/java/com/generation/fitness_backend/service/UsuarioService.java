@@ -1,9 +1,11 @@
 package com.generation.fitness_backend.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import com.generation.fitness_backend.enums.TipoUsuario;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,9 +47,11 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(email);
     }
 
-    public Optional<Usuario> cadastrarUsuario(Usuario usuario) {
+    @Transactional
+    public Usuario cadastrarUsuario(Usuario usuario) {
+
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
-            return Optional.empty();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este email já foi cadastrado!");
         }
 
         if (usuario.getTipoUsuario() == TipoUsuario.ALUNO) {
@@ -66,32 +70,34 @@ public class UsuarioService {
         }
         usuario.setAtivo(true);
 
-        return Optional.of(usuarioRepository.save(usuario));
+        return usuarioRepository.save(usuario);
     }
 
-    public Optional<Usuario> atualizarUsuario(Usuario usuario) {
+    @Transactional
+    public Usuario atualizarUsuario(Usuario usuario) {
 
-        if (usuario.getId() == null || usuarioRepository.findById(usuario.getId()).isEmpty()) {
-            return Optional.empty();
-        }
-        Optional<Usuario> buscaUsuarioExistente = usuarioRepository.findById(usuario.getId());
+        Usuario usuarioExistente = usuarioRepository.findById(usuario.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado para atualização!"));
 
         Optional<Usuario> buscaUsuarioPorEmail = usuarioRepository.findByEmail(usuario.getEmail());
         if (buscaUsuarioPorEmail.isPresent() && !buscaUsuarioPorEmail.get().getId().equals(usuario.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email já cadastrado por outro usuário!");
         }
-        Usuario usuarioExistente = buscaUsuarioExistente.get();
 
         if (usuario.getSenha() != null && !usuario.getSenha().isBlank()) {
             usuarioExistente.setSenha(criptografarSenha(usuario.getSenha()));
-        } else {
-            usuario.setSenha(usuarioExistente.getSenha());
         }
 
         if (usuario.getTipoUsuario() != null) {
             usuarioExistente.setTipoUsuario(usuario.getTipoUsuario());
         }
+
         usuarioExistente.setAtivo(usuario.isAtivo());
+        if (!usuario.isAtivo()) {
+            usuarioExistente.setDataDesativacao(LocalDateTime.now());
+        } else {
+            usuarioExistente.setDataDesativacao(null);
+        }
 
         usuarioExistente.setNomeCompleto(usuario.getNomeCompleto());
         usuarioExistente.setEmail(usuario.getEmail());
@@ -101,9 +107,8 @@ public class UsuarioService {
         usuarioExistente.setPesoKg(usuario.getPesoKg());
         usuarioExistente.setObjetivoPrincipal(usuario.getObjetivoPrincipal());
         usuarioExistente.setUrlImagem(usuario.getUrlImagem());
-        usuarioExistente.setDataDesativacao(usuario.getDataDesativacao());
 
-        return Optional.of(usuarioRepository.save(usuarioExistente));
+        return usuarioRepository.save(usuarioExistente);
     }
 
     public Optional<UsuarioLogin> autenticarUsuario(UsuarioLogin usuarioLogin) {
@@ -114,7 +119,7 @@ public class UsuarioService {
         try {
             authentication = authenticationManager.authenticate(credenciais);
         } catch (Exception e) {
-            return Optional.empty();
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário ou senha inválidos!");
         }
 
         if (authentication.isAuthenticated()) {
@@ -140,9 +145,10 @@ public class UsuarioService {
         return Optional.empty();
     }
 
+    @Transactional
     public void deleteById(Long id) {
-        Optional<Usuario> usuario = usuarioRepository.findById(id);
-        if (usuario.isEmpty()) {
+
+        if (usuarioRepository.findById(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado!");
         }
         usuarioRepository.deleteById(id);

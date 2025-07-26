@@ -11,43 +11,52 @@ import org.springframework.web.server.ResponseStatusException;
 import com.generation.fitness_backend.model.Exercicios;
 import com.generation.fitness_backend.repository.ExerciciosRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ExerciciosService {
 
-	@Autowired
-	private ExerciciosRepository exerciciosRepository;
+    @Autowired
+    private ExerciciosRepository exerciciosRepository;
 
-	public List<Exercicios> findAll() {
-		return exerciciosRepository.findAll();
-	}
+    public List<Exercicios> findAll() {
+        return exerciciosRepository.findAll();
+    }
 
-	public Optional<Exercicios> findById(Long id) {
-		return exerciciosRepository.findById(id);
-	}
+    public Optional<Exercicios> findById(Long id) {
+        return exerciciosRepository.findById(id);
+    }
 
-	public List<Exercicios> findByNome(String nome) {
-		return exerciciosRepository.findAllByNomeContainingIgnoreCase(nome);
+    public List<Exercicios> findByNome(String nome) {
+        return exerciciosRepository.findAllByNomeContainingIgnoreCase(nome);
+    }
 
-	}
+    @Transactional
+    public Exercicios criar(Exercicios exercicio) {
+        return exerciciosRepository.save(exercicio);
+    }
 
-	public Exercicios criar(Exercicios exercicio) {
-		return exerciciosRepository.save(exercicio);
-	}
+    @Transactional
+    public Exercicios atualizar(Exercicios exercicio) {
 
-	public Optional<Exercicios> atualizar(Exercicios exercicio) {
-		if (exercicio.getId() == null || !exerciciosRepository.existsById(exercicio.getId())) {
-			return Optional.empty();
-		}
-		return Optional.of(exerciciosRepository.save(exercicio));
-	}
+        Exercicios exercicioExistente = exerciciosRepository.findById(exercicio.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado para atualização!"));
 
-	public void deleteById(Long id) {
-		Optional<Exercicios> exercicio = exerciciosRepository.findById(id);
+        exercicioExistente.setNome(exercicio.getNome());
+        exercicioExistente.setDescricaoDetalhada(exercicio.getDescricaoDetalhada());
+        exercicioExistente.setNivelDificuldade(exercicio.getNivelDificuldade());
+        exercicioExistente.setUrlVideoDemonstrativo(exercicio.getUrlVideoDemonstrativo());
+        exercicioExistente.setEquipamentoNecessario(exercicio.getEquipamentoNecessario());
+        exercicioExistente.setCategoria(exercicio.getCategoria());
 
-		if (exercicio.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado!");
-		}
+        return exerciciosRepository.save(exercicioExistente);
+    }
 
-		exerciciosRepository.deleteById(id);
-	}
+    @Transactional
+    public void deleteById(Long id) {
+        if (exerciciosRepository.findById(id).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado para exclusão!");
+        }
+        exerciciosRepository.deleteById(id);
+    }
 }

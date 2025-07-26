@@ -6,6 +6,7 @@ import com.generation.fitness_backend.model.Treinos;
 import com.generation.fitness_backend.repository.ExerciciosRepository;
 import com.generation.fitness_backend.repository.TreinoExercicioRepository;
 import com.generation.fitness_backend.repository.TreinosRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class TreinoExercicioService {
         return treinoExercicioRepository.findById(id);
     }
 
+    @Transactional
     public TreinoExercicio createTreinoExercicio(TreinoExercicio treinoExercicio) {
 
         if (treinoExercicio.getTreino() == null || treinoExercicio.getTreino().getId() == null) {
@@ -47,27 +49,22 @@ public class TreinoExercicioService {
         Long treinoId = treinoExercicio.getTreino().getId();
         Long exercicioId = treinoExercicio.getExercicio().getId();
 
-        Optional<Treinos> existingTreino = treinosRepository.findById(treinoId);
-        Optional<Exercicios> existingExercicio = exerciciosRepository.findById(exercicioId);
-
-        if (existingTreino.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Treino não encontrado!");
-        }
-
-        if (existingExercicio.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado!");
-        }
+        Treinos existingTreino = treinosRepository.findById(treinoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Treino não encontrado!"));
+        Exercicios existingExercicio = exerciciosRepository.findById(exercicioId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercício não encontrado!"));
 
         if (treinoExercicioRepository.findByTreinoIdAndExercicioId(treinoId, exercicioId).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Esta associação de Treino e Exercício já existe!");
         }
 
-        treinoExercicio.setTreino(existingTreino.get());
-        treinoExercicio.setExercicio(existingExercicio.get());
+        treinoExercicio.setTreino(existingTreino);
+        treinoExercicio.setExercicio(existingExercicio);
 
         return treinoExercicioRepository.save(treinoExercicio);
     }
 
+    @Transactional
     public Optional<TreinoExercicio> updateTreinoExercicio(TreinoExercicio treinoExercicio) {
         if (treinoExercicio.getId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -96,8 +93,9 @@ public class TreinoExercicioService {
                     return Optional.of(treinoExercicioRepository.save(existingTreinoExercicio));
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Associação de treino e exercício não encontrada para o ID: " + treinoExercicio.getId()));
 
-            }
+    }
 
+    @Transactional
     public void deleteTreinoExercicio(Long id) {
         if (!treinoExercicioRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Associação de treino e exercício não encontrada!");

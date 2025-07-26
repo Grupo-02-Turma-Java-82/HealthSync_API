@@ -2,8 +2,11 @@ package com.generation.fitness_backend.service;
 
 import com.generation.fitness_backend.model.Categoria;
 import com.generation.fitness_backend.repository.CategoriaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,22 +29,26 @@ public class CategoriaService {
         return categoriaRepository.findAllByNomeContainingIgnoreCase(nome);
     }
 
+    @Transactional
     public Categoria criarCategoria(Categoria categoria) {
         return categoriaRepository.save(categoria);
     }
 
-    public Optional<Categoria> atualizarCategoria(Categoria categoria) {
-        if (categoria.getId() != null && categoriaRepository.existsById(categoria.getId())) {
-            return Optional.of(categoriaRepository.save(categoria));
-        }
-        return Optional.empty();
+    @Transactional
+    public Categoria atualizarCategoria(Categoria categoria) {
+        return categoriaRepository.findById(categoria.getId())
+                .map(categoriaExistente -> {
+                    categoriaExistente.setNome(categoria.getNome());
+                    categoriaExistente.setDescricao(categoria.getDescricao());
+                    return categoriaRepository.save(categoriaExistente);
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada para atualização!"));
     }
-
-    public boolean deletarCategoria(Long id) {
-        if (categoriaRepository.existsById(id)) {
-            categoriaRepository.deleteById(id);
-            return true;
+    @Transactional
+    public void deletarCategoria(Long id) {
+        if (!categoriaRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada para exclusão!");
         }
-        return false;
+        categoriaRepository.deleteById(id);
     }
 }
