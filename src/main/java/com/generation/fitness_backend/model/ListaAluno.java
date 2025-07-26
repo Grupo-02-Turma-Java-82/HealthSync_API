@@ -26,7 +26,6 @@ public class ListaAluno {
             "treinos",
             "exercicioRegistros",
             "treinoRegistros",
-            "email",
             "senha"
     })
     private Usuario aluno;
@@ -40,7 +39,6 @@ public class ListaAluno {
             "treinos",
             "exercicioRegistros",
             "treinoRegistros",
-            "email",
             "senha"
     })
     private Usuario treinador;
