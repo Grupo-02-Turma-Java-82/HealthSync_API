@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.fitness_backend.model.Exercicios;
-import com.generation.fitness_backend.repository.ExerciciosRepository;
 import com.generation.fitness_backend.service.ExerciciosService;
 
 import io.swagger.v3.oas.annotations.Operation;

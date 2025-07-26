@@ -2,8 +2,6 @@ package com.generation.fitness_backend.controller;
 
 import com.generation.fitness_backend.model.ListaAluno;
 import com.generation.fitness_backend.model.Usuario;
-import com.generation.fitness_backend.repository.ListaAlunoRepository;
-import com.generation.fitness_backend.repository.UsuarioRepository;
 import com.generation.fitness_backend.service.TreinadorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
