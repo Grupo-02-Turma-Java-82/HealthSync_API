@@ -5,98 +5,103 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 
+@Entity
+@Table(name = "tb_exercicio_registro")
 public class ExercicioRegistro {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 
-	@ManyToMany(mappedBy = "tb_exercicios")
-	@Column(name = "id_exercicio", nullable = false)
-	private Set<Exercicios> exercicio = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToMany(mappedBy = "tb_usuarios")
-	@Column(name = "id_usuario", nullable = false)
-	private Set<Usuario> usuario = new HashSet<>();
+    @ManyToOne
+	@JoinColumn(name = "id_exercicio", nullable = false)
+	@JsonIgnoreProperties("exercicioRegistros")
+    private Exercicios exercicio;
 
-	@NotNull(message = "A a duração dos exercicos é obrigatória")
-	@Column(length = 100, nullable = false)
-	private Integer duracao;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    @JsonIgnoreProperties({"exercicioRegistros", "pesos", "treinos", "atividadesRegistro", "listaAlunos"})
+    private Usuario usuario;
 
-	@NotNull(message = "A quantidade de repeticao é obrigatória")
-	@Column(length = 100, nullable = false)
-	private Integer repeticao;
+    @NotNull(message = "A a duração dos exercicos é obrigatória")
+    @Column(nullable = false)
+    private Integer duracao;
 
-	@NotNull(message = "a carga é obrigatório")
-	@Column(length = 100, nullable = false)
-	private BigDecimal carga;
+    @NotNull(message = "A quantidade de repeticao é obrigatória")
+    @Column(length = 100, nullable = false)
+    private Integer repeticao;
 
-	@CreationTimestamp
-	@Column(nullable = false, updatable = false)
-	private LocalDateTime dataCriacao;
+    @NotNull(message = "A carga é obrigatória")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal carga;
 
-	public Long getId() {
-		return id;
-	}
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime dataCriacao;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public ExercicioRegistro() {
+    }
 
-	public Set<Exercicios> getExercicio() {
-		return exercicio;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setExercicio(Set<Exercicios> exercicio) {
-		this.exercicio = exercicio;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Set<Usuario> getUsuario() {
-		return usuario;
-	}
+    public Exercicios getExercicio() {
+        return exercicio;
+    }
 
-	public void setUsuario(Set<Usuario> usuario) {
-		this.usuario = usuario;
-	}
+    public void setExercicio(Exercicios exercicio) {
+        this.exercicio = exercicio;
+    }
 
-	public Integer getDuracao() {
-		return duracao;
-	}
+    public Usuario getUsuario() {
+        return usuario;
+    }
 
-	public void setDuracao(Integer duracao) {
-		this.duracao = duracao;
-	}
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
-	public Integer getRepeticao() {
-		return repeticao;
-	}
+    public Integer getDuracao() {
+        return duracao;
+    }
 
-	public void setRepeticao(Integer repeticao) {
-		this.repeticao = repeticao;
-	}
+    public void setDuracao(Integer duracao) {
+        this.duracao = duracao;
+    }
 
-	public BigDecimal getCarga() {
-		return carga;
-	}
+    public Integer getRepeticao() {
+        return repeticao;
+    }
 
-	public void setCarga(BigDecimal carga) {
-		this.carga = carga;
-	}
+    public void setRepeticao(Integer repeticao) {
+        this.repeticao = repeticao;
+    }
 
-	public LocalDateTime getDataCadastro() {
-		return dataCriacao;
-	}
+    public BigDecimal getCarga() {
+        return carga;
+    }
 
-	public void setDataCadastro(LocalDateTime dataCadastro) {
-		this.dataCriacao = dataCadastro;
-	}
+    public void setCarga(BigDecimal carga) {
+        this.carga = carga;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
 
 }

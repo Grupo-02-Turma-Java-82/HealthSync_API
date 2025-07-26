@@ -21,7 +21,7 @@ public class Pesos {
 	private Long id;
 
 	@NotNull(message = "O peso é obrigatório")
-	@Column(length = 100, nullable = false)
+	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal pesoKg;
 
 	@CreationTimestamp
@@ -32,6 +32,9 @@ public class Pesos {
 	@JoinColumn(name = "id_usuario", nullable = false)
 	@JsonIgnoreProperties({ "pesos", "dataCadastro", "dataDesativacao" })
 	private Usuario usuario;
+
+	public Pesos() {
+	}
 
 	public Long getId() {
 		return id;

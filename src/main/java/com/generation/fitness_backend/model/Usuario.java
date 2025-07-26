@@ -4,7 +4,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.generation.fitness_backend.enums.TipoUsuario;
 import jakarta.persistence.*;
@@ -35,11 +38,11 @@ public class Usuario {
     @Column(nullable = false, length = 255)
     private String nomeCompleto;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 1000, nullable = true)
     @Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.")
     private String urlImagem;
 
-    @NotNull(message = "O atributo Email é obrigatório!")
+    @NotBlank(message = "O atributo Email é obrigatório!")
     @Email(message = "O atributo Email deve ser válido!")
     @Column(length = 100, nullable = false, unique = true)
     private String email;
@@ -51,19 +54,21 @@ public class Usuario {
     private String senha;
 
     @NotNull(message = "A data de nascimento é obrigatória")
+    @Column(nullable = false)
     private LocalDate dataNascimento;
 
-    @NotBlank(message = "O Gênero é obrigatório")
+    @NotBlank(message = "O atributo Gênero é obrigatório!")
     @Column(length = 100, nullable = false)
     private String genero;
 
-    @Column(length = 100)
+    @Column(nullable = true)
     private Integer alturaCm;
 
-    @Column(length = 100)
+    @Column(nullable = true, precision = 10, scale = 2)
     private BigDecimal pesoKg;
 
-    @Column(length = 255)
+    @Column(length = 255, nullable = true)
+    @Size(max = 255, message = "O objetivo principal deve ter no máximo 255 caracteres.")
     private String objetivoPrincipal;
 
     @Enumerated(EnumType.STRING)
@@ -83,7 +88,42 @@ public class Usuario {
     @Transient
     private BigDecimal imc;
 
-    //imc
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("usuario")
+    @JsonIgnore
+    private List<AtividadeRegistro> atividadesRegistro;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("usuario")
+    @JsonIgnore
+    private List<Pesos> pesos;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("usuario")
+    @JsonIgnore
+    private List<Treinos> treinos;
+
+    @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("aluno")
+    @JsonIgnore
+    private List<ListaAluno> vinculosComoAluno;
+
+    @OneToMany(mappedBy = "treinador", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("treinador")
+    @JsonIgnore
+    private List<ListaAluno> vinculosComoTreinador;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("usuario")
+    @JsonIgnore
+    private List<ExercicioRegistro> exercicioRegistros;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("usuario")
+    @JsonIgnore
+    private List<TreinoRegistro> treinoRegistros;
+
+    // imc
     @PostLoad
     @PrePersist
     @PreUpdate
@@ -107,8 +147,8 @@ public class Usuario {
     }
 
     public Usuario(Long id, String nomeCompleto, String urlImagem, String email, String senha, LocalDate dataNascimento,
-                   String genero, Integer alturaCm, BigDecimal pesoKg, String objetivoPrincipal, TipoUsuario tipoUsuario,
-                   boolean ativo) {
+            String genero, Integer alturaCm, BigDecimal pesoKg, String objetivoPrincipal, TipoUsuario tipoUsuario,
+            boolean ativo) {
         this.id = id;
         this.nomeCompleto = nomeCompleto;
         this.urlImagem = urlImagem;
@@ -132,51 +172,54 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getNomeCompleto() {
+    public @NotBlank(message = "O atributo Nome Completo é obrigatório!") String getNomeCompleto() {
         return nomeCompleto;
     }
 
-    public void setNomeCompleto(String nomeCompleto) {
+    public void setNomeCompleto(@NotBlank(message = "O atributo Nome Completo é obrigatório!") String nomeCompleto) {
         this.nomeCompleto = nomeCompleto;
     }
 
-    public String getUrlImagem() {
+    public @Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.") String getUrlImagem() {
         return urlImagem;
     }
 
-    public void setUrlImagem(String urlImagem) {
+    public void setUrlImagem(
+            @Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.") String urlImagem) {
         this.urlImagem = urlImagem;
     }
 
-    public String getEmail() {
+    public @NotBlank(message = "O atributo Email é obrigatório!") @Email(message = "O atributo Email deve ser válido!") String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(
+            @NotBlank(message = "O atributo Email é obrigatório!") @Email(message = "O atributo Email deve ser válido!") String email) {
         this.email = email;
     }
 
-    public String getSenha() {
+    public @NotBlank(message = "O atributo Senha é obrigatório!") @Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres") String getSenha() {
         return senha;
     }
 
-    public void setSenha(String senha) {
+    public void setSenha(
+            @NotBlank(message = "O atributo Senha é obrigatório!") @Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres") String senha) {
         this.senha = senha;
     }
 
-    public LocalDate getDataNascimento() {
+    public @NotNull(message = "A data de nascimento é obrigatória") LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(LocalDate dataNascimento) {
+    public void setDataNascimento(@NotNull(message = "A data de nascimento é obrigatória") LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 
-    public String getGenero() {
+    public @NotBlank(message = "O atributo Gênero é obrigatório!") String getGenero() {
         return genero;
     }
 
-    public void setGenero(String genero) {
+    public void setGenero(@NotBlank(message = "O atributo Gênero é obrigatório!") String genero) {
         this.genero = genero;
     }
 
@@ -196,11 +239,12 @@ public class Usuario {
         this.pesoKg = pesoKg;
     }
 
-    public String getObjetivoPrincipal() {
+    public @Size(max = 255, message = "O objetivo principal deve ter no máximo 255 caracteres.") String getObjetivoPrincipal() {
         return objetivoPrincipal;
     }
 
-    public void setObjetivoPrincipal(String objetivoPrincipal) {
+    public void setObjetivoPrincipal(
+            @Size(max = 255, message = "O objetivo principal deve ter no máximo 255 caracteres.") String objetivoPrincipal) {
         this.objetivoPrincipal = objetivoPrincipal;
     }
 
@@ -242,5 +286,61 @@ public class Usuario {
 
     public void setImc(BigDecimal imc) {
         this.imc = imc;
+    }
+
+    public List<AtividadeRegistro> getAtividadesRegistro() {
+        return atividadesRegistro;
+    }
+
+    public void setAtividadesRegistro(List<AtividadeRegistro> atividadesRegistro) {
+        this.atividadesRegistro = atividadesRegistro;
+    }
+
+    public List<Pesos> getPesos() {
+        return pesos;
+    }
+
+    public void setPesos(List<Pesos> pesos) {
+        this.pesos = pesos;
+    }
+
+    public List<Treinos> getTreinos() {
+        return treinos;
+    }
+
+    public void setTreinos(List<Treinos> treinos) {
+        this.treinos = treinos;
+    }
+
+    public List<ListaAluno> getVinculosComoAluno() {
+        return vinculosComoAluno;
+    }
+
+    public void setVinculosComoAluno(List<ListaAluno> vinculosComoAluno) {
+        this.vinculosComoAluno = vinculosComoAluno;
+    }
+
+    public List<ListaAluno> getVinculosComoTreinador() {
+        return vinculosComoTreinador;
+    }
+
+    public void setVinculosComoTreinador(List<ListaAluno> vinculosComoTreinador) {
+        this.vinculosComoTreinador = vinculosComoTreinador;
+    }
+
+    public List<ExercicioRegistro> getExercicioRegistros() {
+        return exercicioRegistros;
+    }
+
+    public void setExercicioRegistros(List<ExercicioRegistro> exercicioRegistros) {
+        this.exercicioRegistros = exercicioRegistros;
+    }
+
+    public List<TreinoRegistro> getTreinoRegistros() {
+        return treinoRegistros;
+    }
+
+    public void setTreinoRegistros(List<TreinoRegistro> treinoRegistros) {
+        this.treinoRegistros = treinoRegistros;
     }
 }

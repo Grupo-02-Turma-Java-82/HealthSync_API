@@ -15,118 +15,122 @@ import jakarta.validation.constraints.Size;
 @Table(name = "tb_exercicios")
 public class Exercicios {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotBlank(message = "O atributo nome é Obrigatório!")
-	@Size(min = 5, max = 100, message = "O atributo nome deve conter no mínimo 05 e no máximo 100 caracteres")
-	private String nome;
+    @NotBlank(message = "O atributo nome é Obrigatório!")
+    @Size(min = 5, max = 100, message = "O atributo nome deve conter no mínimo 05 e no máximo 100 caracteres")
+    private String nome;
 
-	@NotBlank(message = "O atributo descricao_detalhada é Obrigatório!")
-	@Column(length = 100, nullable = false)
-	@Size(max = 1000, message = "A descrição deve ter no máximo 1000 caracteres.")
-	private String descricaoDetalhada;
+    @NotBlank(message = "O atributo descricao_detalhada é Obrigatório!")
+    @Column(length = 100, nullable = false)
+    @Size(max = 1000, message = "A descrição deve ter no máximo 1000 caracteres.")
+    private String descricaoDetalhada;
 
-	@Enumerated(EnumType.STRING)
-	@NotNull(message = "O nível de dificuldade do exercício é obrigatório!")
-	@Column(name = "nivel_dificuldade", nullable = false, length = 50)
-	private DificuldadeExercicio nivelDificuldade;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "O nível de dificuldade do exercício é obrigatório!")
+    @Column(name = "nivel_dificuldade", nullable = false, length = 50)
+    private DificuldadeExercicio nivelDificuldade;
 
-	@NotBlank(message = "O atributo url_video_demonstrativo é Obrigatório!")
-	@Column(length = 100, nullable = false)
-	@Size(max = 1000, message = "A url do vídeo deve ter no máximo 1000 caracteres.")
-	private String urlVideoDemonstrativo;
+    @NotBlank(message = "O atributo url_video_demonstrativo é Obrigatório!")
+    @Column(length = 100, nullable = false)
+    @Size(max = 1000, message = "A url do vídeo deve ter no máximo 1000 caracteres.")
+    private String urlVideoDemonstrativo;
 
-	@Column(length = 100, nullable = true)
-	@Size(max = 1000, message = "O atributo equipamento necessário deve ter no máximo 1000 caracteres.")
-	private String equipamentoNecessario;
+    @Column(length = 100, nullable = true)
+    @Size(max = 1000, message = "O atributo equipamento necessário deve ter no máximo 1000 caracteres.")
+    private String equipamentoNecessario;
 
-	@NotNull(message = "A data de criação é obrigatória!")
-	@Column(name = "data_criacao", nullable = false)
-	private LocalDate dataCriacao;
+    @NotNull(message = "A data de criação é obrigatória!")
+    @Column(name = "data_criacao", nullable = false)
+    private LocalDate dataCriacao;
 
-	@ManyToOne
-	@JsonIgnoreProperties("exercicios")
-	private Categoria categoria;
+    @ManyToOne
+    @JsonIgnoreProperties("exercicios")
+    private Categoria categoria;
 
-	@OneToMany(mappedBy = "exercicio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonIgnoreProperties("exercicio")
-	private List<TreinoExercicio> treinoExercicios;
+    @OneToMany(mappedBy = "exercicio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("exercicio")
+    private List<TreinoExercicio> treinoExercicios;
 
-	public Exercicios() {
-		this.dataCriacao = LocalDate.now();
-	}
+    @OneToMany(mappedBy = "exercicio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("exercicio")
+    private List<ExercicioRegistro> exercicioRegistros;
 
-	public Long getId() {
-		return id;
-	}
+    public Exercicios() {
+        this.dataCriacao = LocalDate.now();
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getNome() {
-		return nome;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    public String getNome() {
+        return nome;
+    }
 
-	public String getDescricaoDetalhada() {
-		return descricaoDetalhada;
-	}
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-	public void setDescricaoDetalhada(String descricaoDetalhada) {
-		this.descricaoDetalhada = descricaoDetalhada;
-	}
+    public String getDescricaoDetalhada() {
+        return descricaoDetalhada;
+    }
 
-	public DificuldadeExercicio getNivelDificuldade() {
-		return nivelDificuldade;
-	}
+    public void setDescricaoDetalhada(String descricaoDetalhada) {
+        this.descricaoDetalhada = descricaoDetalhada;
+    }
 
-	public void setNivelDificuldade(DificuldadeExercicio nivelDificuldade) {
-		this.nivelDificuldade = nivelDificuldade;
-	}
+    public DificuldadeExercicio getNivelDificuldade() {
+        return nivelDificuldade;
+    }
 
-	public String getUrlVideoDemonstrativo() {
-		return urlVideoDemonstrativo;
-	}
+    public void setNivelDificuldade(DificuldadeExercicio nivelDificuldade) {
+        this.nivelDificuldade = nivelDificuldade;
+    }
 
-	public void setUrlVideoDemonstrativo(String urlVideoDemonstrativo) {
-		this.urlVideoDemonstrativo = urlVideoDemonstrativo;
-	}
+    public String getUrlVideoDemonstrativo() {
+        return urlVideoDemonstrativo;
+    }
 
-	public String getEquipamentoNecessario() {
-		return equipamentoNecessario;
-	}
+    public void setUrlVideoDemonstrativo(String urlVideoDemonstrativo) {
+        this.urlVideoDemonstrativo = urlVideoDemonstrativo;
+    }
 
-	public void setEquipamentoNecessario(String equipamentoNecessario) {
-		this.equipamentoNecessario = equipamentoNecessario;
-	}
+    public String getEquipamentoNecessario() {
+        return equipamentoNecessario;
+    }
 
-	public LocalDate getDataCriacao() {
-		return dataCriacao;
-	}
+    public void setEquipamentoNecessario(String equipamentoNecessario) {
+        this.equipamentoNecessario = equipamentoNecessario;
+    }
 
-	public void setDataCriacao(LocalDate dataCriacao) {
-		this.dataCriacao = dataCriacao;
-	}
+    public LocalDate getDataCriacao() {
+        return dataCriacao;
+    }
 
-	public Categoria getCategoria() {
-		return categoria;
-	}
+    public void setDataCriacao(LocalDate dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
 
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
-	}
+    public Categoria getCategoria() {
+        return categoria;
+    }
 
-	public List<TreinoExercicio> getTreinoExercicios() {
-		return treinoExercicios;
-	}
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 
-	public void setTreinoExercicios(List<TreinoExercicio> treinoExercicios) {
-		this.treinoExercicios = treinoExercicios;
-	}
+    public List<TreinoExercicio> getTreinoExercicios() {
+        return treinoExercicios;
+    }
+
+    public void setTreinoExercicios(List<TreinoExercicio> treinoExercicios) {
+        this.treinoExercicios = treinoExercicios;
+    }
 }
