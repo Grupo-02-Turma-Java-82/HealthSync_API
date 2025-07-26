@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -25,6 +27,10 @@ public class Treinos {
 
 	@Column(nullable = false)
 	private boolean concluido = false;
+
+	@CreationTimestamp
+	@Column(nullable = false, updatable = false)
+	private LocalDateTime dataCriacao;
 
 	@ManyToOne
 	@JoinColumn(name = "id_usuario", nullable = false)
@@ -101,4 +107,14 @@ public class Treinos {
 	public void setTreinoRegistros(List<TreinoRegistro> treinoRegistros) {
 		this.treinoRegistros = treinoRegistros;
 	}
+
+	public LocalDateTime getDataCriacao() {
+		return dataCriacao;
+	}
+
+	public void setDataCriacao(LocalDateTime dataCriacao) {
+		this.dataCriacao = dataCriacao;
+	}
+
 }
+
