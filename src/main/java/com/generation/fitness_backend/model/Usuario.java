@@ -88,6 +88,24 @@ public class Usuario {
     @Transient
     private BigDecimal imc;
 
+    @Column(nullable = false)
+    private Integer sequenciaAtualDias = 0;
+
+    @Column(nullable = false)
+    private Integer melhorSequenciaDias = 0;
+
+    @Column(nullable = false)
+    private Long tempoTotalExerciciosMinutos = 0L;
+
+    @Column(nullable = false)
+    private Integer metaSemanalTreinos = 0;
+
+    @Column(nullable = false)
+    private Integer treinosRealizadosNaSemana = 0;
+
+    @Column(nullable = true)
+    private LocalDate dataUltimoTreinoConcluido;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("usuario")
     @JsonIgnore
@@ -341,5 +359,53 @@ public class Usuario {
 
     public void setTreinoRegistros(List<TreinoRegistro> treinoRegistros) {
         this.treinoRegistros = treinoRegistros;
+    }
+
+    public Integer getSequenciaAtualDias() {
+        return sequenciaAtualDias;
+    }
+
+    public void setSequenciaAtualDias(Integer sequenciaAtualDias) {
+        this.sequenciaAtualDias = sequenciaAtualDias;
+    }
+
+    public Integer getMelhorSequenciaDias() {
+        return melhorSequenciaDias;
+    }
+
+    public void setMelhorSequenciaDias(Integer melhorSequenciaDias) {
+        this.melhorSequenciaDias = melhorSequenciaDias;
+    }
+
+    public Long getTempoTotalExerciciosMinutos() {
+        return tempoTotalExerciciosMinutos;
+    }
+
+    public void setTempoTotalExerciciosMinutos(Long tempoTotalExerciciosMinutos) {
+        this.tempoTotalExerciciosMinutos = tempoTotalExerciciosMinutos;
+    }
+
+    public Integer getMetaSemanalTreinos() {
+        return metaSemanalTreinos;
+    }
+
+    public void setMetaSemanalTreinos(Integer metaSemanalTreinos) {
+        this.metaSemanalTreinos = metaSemanalTreinos;
+    }
+
+    public Integer getTreinosRealizadosNaSemana() {
+        return treinosRealizadosNaSemana;
+    }
+
+    public void setTreinosRealizadosNaSemana(Integer treinosRealizadosNaSemana) {
+        this.treinosRealizadosNaSemana = treinosRealizadosNaSemana;
+    }
+
+    public LocalDate getDataUltimoTreinoConcluido() {
+        return dataUltimoTreinoConcluido;
+    }
+
+    public void setDataUltimoTreinoConcluido(LocalDate dataUltimoTreinoConcluido) {
+        this.dataUltimoTreinoConcluido = dataUltimoTreinoConcluido;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +51,6 @@ public class TreinosService {
 
         treino.setUsuario(usuarioExistente);
         treino.setConcluido(false);
-
-        //alt
-        treino.setConcluido(false);
         treino.setDataUltimaConclusao(null);
 
         return treinosRepository.save(treino);
@@ -71,12 +69,9 @@ public class TreinosService {
             treinoExistente.setUsuario(novoUsuario);
         }
 
-        if (treino.getNome() != null) {
-            treinoExistente.setNome(treino.getNome());
-        }
-        if (treino.getDescricao() != null) {
-            treinoExistente.setDescricao(treino.getDescricao());
-        }
+        treinoExistente.setNome(treino.getNome());
+        treinoExistente.setDescricao(treino.getDescricao());
+        treinoExistente.setTempoMinutos(treino.getTempoMinutos());
 
         return treinosRepository.save(treinoExistente);
     }
@@ -93,18 +88,45 @@ public class TreinosService {
     public void completeWorkout(Long id) {
         Treinos treino = treinosRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Treino não encontrado!"));
-        //inverte
-        boolean novoStatusConclusao = !treino.isConcluido();
-        treino.setConcluido(novoStatusConclusao);
 
-        if (novoStatusConclusao) {
+        Usuario usuario = treino.getUsuario();
+
+        boolean novoStatusConcluido = !treino.isConcluido();
+        treino.setConcluido(novoStatusConcluido);
+
+        if (novoStatusConcluido) {
             treino.setDataUltimaConclusao(LocalDateTime.now());
+
+            if (treino.getTempoMinutos() != null) {
+                usuario.setTempoTotalExerciciosMinutos(usuario.getTempoTotalExerciciosMinutos() + treino.getTempoMinutos());
+            }
+
+            usuario.setTreinosRealizadosNaSemana(usuario.getTreinosRealizadosNaSemana() + 1);
+
+            LocalDate hoje = LocalDate.now();
+            if (usuario.getDataUltimoTreinoConcluido() == null) {
+                usuario.setSequenciaAtualDias(1);
+            } else if (usuario.getDataUltimoTreinoConcluido().isEqual(hoje.minusDays(1))) {
+                usuario.setSequenciaAtualDias(usuario.getSequenciaAtualDias() + 1);
+            } else if (usuario.getDataUltimoTreinoConcluido().isBefore(hoje.minusDays(1))) {
+                usuario.setSequenciaAtualDias(1);
+            }
+
+            if (usuario.getSequenciaAtualDias() > usuario.getMelhorSequenciaDias()) {
+                usuario.setMelhorSequenciaDias(usuario.getSequenciaAtualDias());
+            }
+
+            usuario.setDataUltimoTreinoConcluido(hoje);
+
         } else {
             treino.setDataUltimaConclusao(null);
+
+            usuario.setTreinosRealizadosNaSemana(usuario.getTreinosRealizadosNaSemana() - 1);
+            if (usuario.getTreinosRealizadosNaSemana() < 0) {
+                usuario.setTreinosRealizadosNaSemana(0);
+            }
         }
-
         treinosRepository.save(treino);
-
+        usuarioRepository.save(usuario);
     }
-
 }

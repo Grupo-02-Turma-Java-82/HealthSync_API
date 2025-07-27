@@ -3,7 +3,9 @@ package com.generation.fitness_backend.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -34,6 +36,11 @@ public class Treinos {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
+
+    @NotNull(message = "O tempo estimado do treino é obrigatório!")
+    @Min(value = 1, message = "O tempo estimado deve ser no mínimo 1 minuto.")
+    @Column(nullable = false)
+    private Integer tempoMinutos;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
@@ -125,6 +132,14 @@ public class Treinos {
 
     public void setDataUltimaConclusao(LocalDateTime dataUltimaConclusao) {
         this.dataUltimaConclusao = dataUltimaConclusao;
+    }
+
+    public Integer getTempoMinutos() {
+        return tempoMinutos;
+    }
+
+    public void setTempoMinutos(Integer tempoMinutos) {
+        this.tempoMinutos = tempoMinutos;
     }
 }
 
