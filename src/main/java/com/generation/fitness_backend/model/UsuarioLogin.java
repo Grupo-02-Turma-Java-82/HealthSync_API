@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.math.BigDecimal;
+
 public class UsuarioLogin {
 
     private Long id;
@@ -21,6 +23,9 @@ public class UsuarioLogin {
     private TipoUsuario tipoUsuario;
 
     private String token;
+
+    private String urlImagem;
+    private BigDecimal imc;
 
     public UsuarioLogin() {
     }
@@ -71,5 +76,21 @@ public class UsuarioLogin {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getUrlImagem() {
+        return urlImagem;
+    }
+
+    public void setUrlImagem(String urlImagem) {
+        this.urlImagem = urlImagem;
+    }
+
+    public BigDecimal getImc() {
+        return imc;
+    }
+
+    public void setImc(BigDecimal imc) {
+        this.imc = imc;
     }
 }

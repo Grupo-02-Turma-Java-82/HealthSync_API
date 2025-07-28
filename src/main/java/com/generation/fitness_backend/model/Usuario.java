@@ -189,54 +189,51 @@ public class Usuario {
         this.id = id;
     }
 
-    public @NotBlank(message = "O atributo Nome Completo é obrigatório!") String getNomeCompleto() {
+    public String getNomeCompleto() {
         return nomeCompleto;
     }
 
-    public void setNomeCompleto(@NotBlank(message = "O atributo Nome Completo é obrigatório!") String nomeCompleto) {
+    public void setNomeCompleto(String nomeCompleto) {
         this.nomeCompleto = nomeCompleto;
     }
 
-    public @Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.") String getUrlImagem() {
+    public String getUrlImagem() {
         return urlImagem;
     }
 
-    public void setUrlImagem(
-            @Size(max = 1000, message = "A url da imagem deve ter no máximo 1000 caracteres.") String urlImagem) {
+    public void setUrlImagem(String urlImagem) {
         this.urlImagem = urlImagem;
     }
 
-    public @NotBlank(message = "O atributo Email é obrigatório!") @Email(message = "O atributo Email deve ser válido!") String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(
-            @NotBlank(message = "O atributo Email é obrigatório!") @Email(message = "O atributo Email deve ser válido!") String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public @NotBlank(message = "O atributo Senha é obrigatório!") @Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres") String getSenha() {
+    public String getSenha() {
         return senha;
     }
 
-    public void setSenha(
-            @NotBlank(message = "O atributo Senha é obrigatório!") @Size(min = 8, message = "A Senha deve ter no mínimo 8 caracteres") String senha) {
+    public void setSenha(String senha) {
         this.senha = senha;
     }
 
-    public @NotNull(message = "A data de nascimento é obrigatória") LocalDate getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(@NotNull(message = "A data de nascimento é obrigatória") LocalDate dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 
-    public @NotBlank(message = "O atributo Gênero é obrigatório!") String getGenero() {
+    public String getGenero() {
         return genero;
     }
 
-    public void setGenero(@NotBlank(message = "O atributo Gênero é obrigatório!") String genero) {
+    public void setGenero(String genero) {
         this.genero = genero;
     }
 
@@ -256,12 +253,11 @@ public class Usuario {
         this.pesoKg = pesoKg;
     }
 
-    public @Size(max = 255, message = "O objetivo principal deve ter no máximo 255 caracteres.") String getObjetivoPrincipal() {
+    public String getObjetivoPrincipal() {
         return objetivoPrincipal;
     }
 
-    public void setObjetivoPrincipal(
-            @Size(max = 255, message = "O objetivo principal deve ter no máximo 255 caracteres.") String objetivoPrincipal) {
+    public void setObjetivoPrincipal(String objetivoPrincipal) {
         this.objetivoPrincipal = objetivoPrincipal;
     }
 
