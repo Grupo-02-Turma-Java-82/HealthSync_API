@@ -138,6 +138,8 @@ public class UsuarioService {
                 retornoLogin.setEmail(usuario.get().getEmail());
                 retornoLogin.setTipoUsuario(usuario.get().getTipoUsuario());
                 retornoLogin.setToken(token);
+                retornoLogin.setUrlImagem(usuario.get().getUrlImagem());
+                retornoLogin.setImc(usuario.get().getImc());
 
                 return Optional.of(retornoLogin);
             }
