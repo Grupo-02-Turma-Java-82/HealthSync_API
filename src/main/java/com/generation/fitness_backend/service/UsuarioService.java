@@ -141,6 +141,13 @@ public class UsuarioService {
                 retornoLogin.setUrlImagem(usuario.get().getUrlImagem());
                 retornoLogin.setImc(usuario.get().getImc());
 
+                retornoLogin.setSequenciaAtualDias(usuario.get().getSequenciaAtualDias());
+                retornoLogin.setMelhorSequenciaDias(usuario.get().getMelhorSequenciaDias());
+                retornoLogin.setTempoTotalExerciciosMinutos(usuario.get().getTempoTotalExerciciosMinutos());
+                retornoLogin.setMetaSemanalTreinos(usuario.get().getMetaSemanalTreinos());
+                retornoLogin.setTreinosRealizadosNaSemana(usuario.get().getTreinosRealizadosNaSemana());
+                retornoLogin.setDataUltimoTreinoConcluido(usuario.get().getDataUltimoTreinoConcluido());
+
                 return Optional.of(retornoLogin);
             }
         }
