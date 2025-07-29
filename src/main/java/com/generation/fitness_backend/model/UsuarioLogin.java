@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class UsuarioLogin {
 
@@ -26,6 +27,12 @@ public class UsuarioLogin {
 
     private String urlImagem;
     private BigDecimal imc;
+    private Integer sequenciaAtualDias;
+    private Integer melhorSequenciaDias;
+    private Long tempoTotalExerciciosMinutos;
+    private Integer metaSemanalTreinos;
+    private Integer treinosRealizadosNaSemana;
+    private LocalDate dataUltimoTreinoConcluido;
 
     public UsuarioLogin() {
     }
@@ -93,4 +100,53 @@ public class UsuarioLogin {
     public void setImc(BigDecimal imc) {
         this.imc = imc;
     }
+
+    public Integer getSequenciaAtualDias() {
+        return this.sequenciaAtualDias;
+    }
+
+    public void setSequenciaAtualDias(Integer sequenciaAtualDias) {
+        this.sequenciaAtualDias = sequenciaAtualDias;
+    }
+
+    public Integer getMelhorSequenciaDias() {
+        return this.melhorSequenciaDias;
+    }
+
+    public void setMelhorSequenciaDias(Integer melhorSequenciaDias) {
+        this.melhorSequenciaDias = melhorSequenciaDias;
+    }
+
+    public Integer getMetaSemanalTreinos() {
+        return this.metaSemanalTreinos;
+    }
+
+    public void setMetaSemanalTreinos(Integer metaSemanalTreinos) {
+        this.metaSemanalTreinos = metaSemanalTreinos;
+    }
+
+    public Integer getTreinosRealizadosNaSemana() {
+        return this.treinosRealizadosNaSemana;
+    }
+
+    public void setTreinosRealizadosNaSemana(Integer treinosRealizadosNaSemana) {
+        this.treinosRealizadosNaSemana = treinosRealizadosNaSemana;
+    }
+
+    public Long getTempoTotalExerciciosMinutos() {
+        return this.tempoTotalExerciciosMinutos;
+    }
+
+    public void setTempoTotalExerciciosMinutos(Long tempoTotalExerciciosMinutos) {
+        this.tempoTotalExerciciosMinutos = tempoTotalExerciciosMinutos;
+    }
+
+    public LocalDate getDataUltimoTreinoConcluido() {
+        return this.dataUltimoTreinoConcluido;
+    }
+
+    public void setDataUltimoTreinoConcluido(LocalDate dataUltimoTreinoConcluido) {
+        this.dataUltimoTreinoConcluido = dataUltimoTreinoConcluido;
+    }
+
 }
