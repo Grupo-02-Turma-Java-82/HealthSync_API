@@ -1,115 +1,153 @@
-
-# 💪 HealthSync - Sistema Fitness Personalizado
-
-<div align="center">
-    <img src="https://ik.imagekit.io/brunogodoy/HealthSync%20(1).png?updatedAt=1752033925519" title="HealthSync Logo" width="350" />
-</div>
-
-<br />
+# **HealthSync API 💪**
 
 <div align="center">
-  <img src="https://img.shields.io/badge/java-17-red?style=flat-square" />
-  <img src="https://img.shields.io/badge/springboot-3.x-green?style=flat-square" />
-  <img src="https://img.shields.io/badge/jwt-auth-blue?style=flat-square" />
-  <img src="https://img.shields.io/badge/status-em%20desenvolvimento-yellow" />
+  <img src="https://ik.imagekit.io/brunogodoy/HealthSync%20(1).png?updatedAt=1752033925519" alt="HealthSync Logo" width="400"/>
 </div>
 
----
-
-
-## 1. Descrição
-
-O **HealthSync** é um sistema de fitness personalizado desenvolvido em **Java com Spring Boot**, com foco na organização de treinos por categoria, cadastro de exercícios e gerenciamento de usuários. A aplicação conta com **CRUD completo**, **autenticação segura via JWT** e estrutura preparada para integrar com aplicações front-end.
-
----
-
-## 2. Funcionalidades
-
-- Cadastro, busca, atualização e exclusão de usuários
-- Cadastro de exercícios com vínculo a categorias
-- Consulta de exercícios por nível de dificuldade, grupo muscular, etc.
-- Autenticação e geração de token JWT para login seguro
-- Relacionamento entre entidades com JPA
-- Proteção de rotas e validações com Spring Security
-- Registro automático com data de cadastro
+<p align="center">
+  <img alt="Java" src="https://img.shields.io/badge/Java-17-blue?style=for-the-badge&logo=openjdk&logoColor=white">
+  <img alt="Spring Boot" src="https://img.shields.io/badge/Spring_Boot-3.4.6-green?style=for-the-badge&logo=spring-boot">
+  <img alt="Security" src="https://img.shields.io/badge/Security-JWT-purple?style=for-the-badge&logo=jsonwebtokens">
+  <img alt="Status" src="https://img.shields.io/badge/Status-Em_Desenvolvimento-yellow?style=for-the-badge">
+</p>
 
 ---
 
-## 3. Diagrama de Classes
+## 📖 **Sobre o Projeto**
 
+A **HealthSync API** é uma solução backend robusta desenvolvida em **Java 17 + Spring Boot 3**, criada para **otimizar e gerenciar treinos personalizados, exercícios e o relacionamento entre treinadores e alunos**.  
+
+O projeto segue o padrão **RESTful**, com autenticação via **JWT** e arquitetura em camadas (Controller → Service → Repository), garantindo **segurança, escalabilidade e integração simplificada** com aplicações frontend.
+
+---
+
+## ✨ **Principais Funcionalidades**
+
+- **👤 Gerenciamento de Usuários**  
+  CRUD completo para usuários, com distinção entre perfis (`ALUNO`, `TREINADOR`).
+  
+- **🔐 Segurança JWT**  
+  Autenticação e autorização de endpoints por role utilizando **Spring Security + JWT**.
+
+- **🏋️ Exercícios e Categorias**  
+  CRUD de exercícios e agrupamento por categorias para melhor organização.
+
+- **💪 Treinos Personalizados**  
+  Criação de treinos associados a exercícios e a alunos específicos.
+
+- **🔄 Vínculo Treinador-Aluno**  
+  Treinadores autenticados podem cadastrar alunos e vinculá-los automaticamente.
+
+- **📈 Rastreamento de Progresso**  
+  Marcação de treinos concluídos com atualização automática de métricas.
+
+---
+
+## 🏛️ **Arquitetura e Diagrama de Classes**
+
+A arquitetura utiliza **DTOs** para proteger dados sensíveis e **Spring Data JPA** para persistência.  
+Abaixo, um diagrama representando as entidades e seus relacionamentos:
 
 ```mermaid
 erDiagram
-    USUARIO ||--o{ EXERCICIO : cadastra
-    CATEGORIA ||--o{ EXERCICIO : pertence
-
     USUARIO {
-        Long id_usuario
-        String nome_completo
+        Long id
+        String nomeCompleto
         String email
         String senha
-        Date data_nascimento
-        String genero
-        Integer altura_cm
-        Decimal peso_kg
-        String objetivo_principal
-        Timestamp data_cadastro
+        LocalDate dataNascimento
+        TipoUsuario tipoUsuario
+        boolean ativo
     }
 
     CATEGORIA {
-        Long id_categoria
+        Long id
         String nome
-        Text descricao
+        String descricao
     }
 
-    EXERCICIO {
-        Long id_exercicio
+    EXERCICIOS {
+        Long id
         String nome
-        Text descricao_detalhada
-        String grupo_muscular_principal
-        String nivel_dificuldade
-        String url_video_demonstrativo
-        String equipamento_necessario
+        String descricaoDetalhada
+        DificuldadeExercicio nivelDificuldade
+        String urlVideoDemonstrativo
+        Long categoria_id
     }
+
+    TREINOS {
+        Long id
+        String nome
+        String descricao
+        boolean concluido
+        Integer tempoMinutos
+        Long usuario_id
+    }
+
+    LISTA_ALUNO {
+        Long id
+        Long id_aluno
+        Long id_treinador
+        LocalDateTime dataVinculo
+    }
+
+    TREINO_EXERCICIO {
+        Long id
+        Long id_treino
+        Long id_exercicio
+    }
+
+    USUARIO ||--o{ TREINOS : "cria"
+    USUARIO ||--o{ LISTA_ALUNO : "é aluno em"
+    USUARIO ||--o{ LISTA_ALUNO : "é treinador de"
+    TREINOS ||--|{ TREINO_EXERCICIO : "contém"
+    EXERCICIOS ||--|{ TREINO_EXERCICIO : "faz parte de"
+    CATEGORIA ||--o{ EXERCICIOS : "agrupa"
 ```
 
 ---
 
-## 4. Tecnologias utilizadas
+## 🛠 **Tecnologias Utilizadas**
 
-| Item                          | Descrição                         |
-|-------------------------------|-----------------------------------|
-| **Servidor**                  | Apache Tomcat (Spring Boot)       |
-| **Linguagem**                 | Java 17                           |
-| **Framework**                 | Spring Boot 3.x                   |
-| **ORM**                       | Spring Data JPA / Hibernate       |
-| **Banco de Dados**            | H2 (dev) / MySQL (produção)       |
-| **Segurança**                 | Spring Security + JWT             |
-| **Validação**                 | Bean Validation (JSR 380)         |
-| **Documentação**              | Swagger / OpenAPI (opcional)      |
-| **Testes**                    | Postman / Insomnia                |
+| Tecnologia / Ferramenta       | Uso no Projeto |
+|-------------------------------|----------------|
+| **Java 17**                   | Linguagem principal |
+| **Spring Boot 3.x**            | Framework backend |
+| **Spring Data JPA / Hibernate**| ORM e persistência |
+| **MySQL / H2**                 | Banco de dados (produção/dev) |
+| **Spring Security + JWT**      | Autenticação e autorização |
+| **Bean Validation (JSR 380)**  | Validação de dados |
+| **Swagger / OpenAPI**          | Documentação da API |
+| **JUnit / Insomnia**           | Testes e requisições |
 
-------
+---
 
-## 5. Configuração e Execução
+## 📄 **Documentação (Swagger)**
+
+Após rodar o projeto, a documentação estará disponível em:  
+```
+http://localhost:8080/swagger-ui.html
+```
+
+---
+
+## 🚀 **Como Executar o Projeto**
 
 ```bash
 # 1. Clone o repositório:
-git clone https://github.com/Grupo-02-Turma-Java-82/HealthSync.git
+git clone https://github.com/Grupo-02-Turma-Java-82/HealthSync_API.git
 
-# 2. Abra na IDE (VSCode, IntelliJ, Eclipse ou STS)
+# 2. Abra na IDE de sua preferência (IntelliJ, Eclipse, VSCode com extensão Java)
 
 # 3. Configure o banco de dados no application.properties
 
-# 4. Rode a aplicação:
+# 4. Execute:
 ./mvnw spring-boot:run
 ```
 
 ---
 
-## 6. Participantes
-
-Este projeto foi desenvolvido por:
+## 👥 **Integrantes**
 
 | Nome                | GitHub                                           | Função                 |
 |---------------------|--------------------------------------------------|------------------------|
@@ -121,8 +159,8 @@ Este projeto foi desenvolvido por:
 | Maria Helena        | [squarcinihelena](https://github.com/squarcinihelena) | Dev               |
 | Rafaela Giometti    | [rafagiometti](https://github.com/rafagiometti) | Dev                    |
 
-## 7. Status do Projeto
-
-🟡 Em desenvolvimento — funcionalidades principais concluídas, melhorias em andamento.
-
 ---
+
+## 📌 **Status do Projeto**
+
+🟡 **Em desenvolvimento** — funcionalidades principais concluídas, melhorias e novas features em andamento.
